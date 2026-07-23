@@ -1,7 +1,64 @@
-version: "3.9"
-
 services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: irenexa-app
+    working_dir: /var/www
+    command: >
+      sh -c "mkdir -p /var/www/storage/framework/views /var/www/bootstrap/cache /var/www/database \
+      && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/www/database \
+      && chmod -R 0777 /var/www/storage /var/www/bootstrap/cache /var/www/database \
+      && [ -f /var/www/database/database.sqlite ] || touch /var/www/database/database.sqlite \
+      && chown www-data:www-data /var/www/database/database.sqlite \
+      && php-fpm"
+    volumes:
+      - ./src:/var/www
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - irenexa
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: irenexa-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - irenexa
+
+  mysql:
+    image: mysql:8.4
+    container_name: irenexa-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: irenexa
+      MYSQL_USER: irenexa
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - irenexa
+
+  redis:
+    image: redis:7-alpine
+    container_name: irenexa-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - irenexa
 
 volumes:
+  mysql_data:
 
 networks:
+  irenexa:
