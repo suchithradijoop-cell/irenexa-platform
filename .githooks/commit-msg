@@ -1,0 +1,20 @@
+#!/bin/sh
+# This script checks that your commit message follows our format:
+#   type: short description
+# Example: feat: add customer creation form
+# Allowed types: feat, fix, docs, style, refactor, test, chore
+
+commit_msg_file="$1"
+commit_msg=$(cat "$commit_msg_file")
+pattern="^(feat|fix|docs|style|refactor|test|chore)(\([a-z0-9-]+\))?: .{1,80}"
+
+if ! echo "$commit_msg" | grep -qE "$pattern"; then
+    echo ""
+    echo "Commit message rejected: it doesn't follow the required format."
+    echo "Expected:  type: short description"
+    echo "Example:   feat: add customer creation form"
+    echo "Allowed types: feat, fix, docs, style, refactor, test, chore"
+    exit 1
+fi
+
+exit 0

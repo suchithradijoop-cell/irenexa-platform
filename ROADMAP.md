@@ -15,7 +15,7 @@ Use everyday examples (shopping, food, daily life) before code examples.
 ## 📍 Currently On
 
 **Phase 1 — Professional Development Environment**
-**Lesson 1.2 — Automatic Code Checkers (Pint + PHPStan)**
+**Lesson 1.3 — Git Hooks (stop bad code before it's committed)**
 Status: In progress (started 2026-07-22)
 
 ---
@@ -49,20 +49,22 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | Dockerfile (PHP 8.3-fpm + extensions) | ✅ |
 | Nginx config | ✅ |
 | Laravel skeleton installed (composer.json, package.json) | ✅ |
-| .env configured & verified | 🔄 (Lesson 1.1 in progress) |
-| Laravel Pint config | ⬜ |
-| PHPStan (Larastan) config | ⬜ |
-| Git hooks / pre-commit checks | ⬜ |
+| .env configured & verified | ✅ |
+| Laravel Pint config | ✅ |
+| PHPStan (Larastan) config | ✅ |
+| Git hooks / pre-commit checks | 🔄 |
 | Root README with setup instructions | ⬜ |
+| Docker containers actually running (mysql, redis, nginx, app) | ✅ |
+| Laravel skeleton + Docker files committed to git | ✅ |
 
 ### Phase 1 Lessons
 
 | # | Lesson | Status |
 |---|--------|--------|
 | 1.1 | The .env File (Environment Variables) | ✅ |
-| 1.2 | Automatic Code Checkers (Pint + PHPStan) | 🔄 |
-| 1.3 | Git Hooks (stop bad code before it's committed) | ⬜ |
-| 1.4 | First Real Commit — Laravel skeleton, Docker files, cleanup | ⬜ |
+| 1.2 | Automatic Code Checkers (Pint + PHPStan) | ✅ |
+| 1.3 | Git Hooks (stop bad code before it's committed) | 🔄 |
+| 1.4 | First Real Commit — Laravel skeleton, Docker files, cleanup | ✅ (done ahead, while unblocking Docker) |
 
 ## Phase 2 — Laravel Internals ⬜
 ## Phase 3 — PHP Advanced ⬜
@@ -103,3 +105,6 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 2026-07-19 | Lesson 0.5 done | Git workflow: commit message format (type: description), branching (draft copy analogy). Homework: write 3 example commit messages. |
 | 2026-07-19 | Lesson 0.6 done | Definition of Done + ADRs (documentation). Phase 0 complete (6/6 lessons). Homework: write ADR for choosing Docker. |
 | 2026-07-22 | Repo audit | Found real git history exists (2 commits) but Laravel app + Docker files are still untracked. Found a stray src/error.txt (just a saved copy of the homepage HTML, safe to remove). Found REDIS_HOST=127.0.0.1 in .env — wrong for Docker, fixed to REDIS_HOST=redis. Also set APP_NAME=IRENEXA. |
+| 2026-07-22 | Lesson 1.1 done | .env explained, real bug found & fixed (REDIS_HOST). |
+| 2026-07-22 | Lesson 1.2 done | Pint + PHPStan (Larastan) explained and configured (level 5). User ran composer update, docker compose up --build -d — got everything running. Pint: PASS. PHPStan: no errors. |
+| 2026-07-22 | Lesson 1.4 done (early) | Committed everything properly in 5 clean, topic-based commits via GitHub Desktop: docker environment, laravel skeleton, code quality tooling, roadmap, gitignore fix + composer.lock. Also found and fixed a real gap: .gitignore was missing storage/framework/* cache exclusions — 40+ compiled Blade view cache files + PHPStan cache almost got committed. |

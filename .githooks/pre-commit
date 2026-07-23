@@ -1,0 +1,23 @@
+#!/bin/sh
+# This script runs automatically, every time you try to "git commit".
+# It checks your code BEFORE the commit is allowed to happen.
+# If either check fails, the commit is blocked (exit 1 = stop).
+
+echo "Running Pint (code style check)..."
+docker compose exec -T app vendor/bin/pint --dirty
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "Pint made changes or found a problem. Review the changes, add them, and commit again."
+    exit 1
+fi
+
+echo "Running PHPStan (bug check)..."
+docker compose exec -T app vendor/bin/phpstan analyse --no-progress
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "PHPStan found a problem. Fix it before committing."
+    exit 1
+fi
+
+echo "All checks passed. Proceeding with commit."
+exit 0
