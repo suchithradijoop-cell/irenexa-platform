@@ -1,0 +1,13 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+
+    # Level 5 is a good honest starting point — strict enough to catch real
+    # mistakes, not so strict it drowns us in noise while we're still learning.
+    # We will raise this number as the codebase and our skills grow.
+    level: 5
+
+    tmpDir: storage/framework/phpstan
