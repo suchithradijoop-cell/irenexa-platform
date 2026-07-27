@@ -15,7 +15,7 @@ Use everyday examples (shopping, food, daily life) before code examples.
 ## 📍 Currently On
 
 **Phase 5 — Multi-Tenancy**
-**Lesson 5.2 — Tenants Table & "Who Is The Current Tenant Right Now?"**
+**Lesson 5.3 — Middleware: Resolving the Tenant From the Request**
 Status: In progress (started 2026-07-22)
 
 ---
@@ -109,8 +109,8 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | # | Lesson | Status |
 |---|--------|--------|
 | 5.1 | What Is Multi-Tenancy, and Which Approach Should We Use? | ✅ |
-| 5.2 | Tenants Table & "Who Is The Current Tenant Right Now?" | 🔄 |
-| 5.3 | Middleware: Resolving the Tenant From the Request | ⬜ |
+| 5.2 | Tenants Table & "Who Is The Current Tenant Right Now?" | ✅ |
+| 5.3 | Middleware: Resolving the Tenant From the Request | 🔄 |
 | 5.4 | Global Scopes: Automatically Filtering Every Query by Tenant | ⬜ |
 | 5.5 | Automatically Stamping New Records with the Tenant ID | ⬜ |
 | 5.6 | Testing Tenant Isolation & Retrofitting the Lead Feature | ⬜ |
