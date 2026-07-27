@@ -15,7 +15,7 @@ Use everyday examples (shopping, food, daily life) before code examples.
 ## 📍 Currently On
 
 **Phase 5 — Multi-Tenancy**
-**Lesson 5.3 — Middleware: Resolving the Tenant From the Request**
+**Lesson 5.4 — Global Scopes: Automatically Filtering Every Query by Tenant**
 Status: In progress (started 2026-07-22)
 
 ---
@@ -110,8 +110,8 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 |---|--------|--------|
 | 5.1 | What Is Multi-Tenancy, and Which Approach Should We Use? | ✅ |
 | 5.2 | Tenants Table & "Who Is The Current Tenant Right Now?" | ✅ |
-| 5.3 | Middleware: Resolving the Tenant From the Request | 🔄 |
-| 5.4 | Global Scopes: Automatically Filtering Every Query by Tenant | ⬜ |
+| 5.3 | Middleware: Resolving the Tenant From the Request | ✅ |
+| 5.4 | Global Scopes: Automatically Filtering Every Query by Tenant | ✅ |
 | 5.5 | Automatically Stamping New Records with the Tenant ID | ⬜ |
 | 5.6 | Testing Tenant Isolation & Retrofitting the Lead Feature | ⬜ |
 ## Phase 6 — Authentication ⬜
@@ -156,3 +156,8 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 2026-07-22 | Phase 2 complete | Request Lifecycle, Service Container, Service Providers, Facades, Middleware, Config/env loading — all concept lessons, no code changes. |
 | 2026-07-22 | Phase 3 complete | Interfaces, Traits, Enums, Constructor Promotion & Readonly, Exceptions, Strict Types — all concept lessons, no code changes. |
 | 2026-07-22 | Lesson 4.5 done | Built the first real end-to-end feature: LeadStatus enum, leads migration, Lead model, LeadRepositoryInterface + EloquentLeadRepository, RepositoryServiceProvider (new, bound in bootstrap/providers.php), LeadService, StoreLeadRequest, Api\LeadController, routes/api.php (new — also wired into bootstrap/app.php's withRouting). Also fixed port conflicts along the way: MySQL 3306→3307 (XAMPP local MySQL conflict) and Nginx 80→8080 (XAMPP Apache conflict). Tested live via curl POST /api/leads — full chain confirmed working, status auto-set to "new" by the business rule. |
+| 2026-07-22 | Phase 4 complete | Lesson 4.6 recap + real Customer-feature homework plan. Full architecture (Route→Form Request→Controller→Service→Repository→DB) proven end-to-end with the Lead feature. |
+| 2026-07-22 | Lesson 5.1 done | ADR 002 written and saved (docs/adr/002-multi-tenancy-strategy.md) — decided shared database, shared schema for tenant isolation. |
+| 2026-07-22 | Lesson 5.2 done | Built tenants table, Tenant model, TenantContext singleton (registered in AppServiceProvider). |
+| 2026-07-22 | Lesson 5.3 done | Built ResolveTenant middleware (X-Tenant header), aliased as 'tenant', applied to lead routes. Tested live: missing header → 400, valid header → passes through. |
+| 2026-07-22 | Lesson 5.4 done | Added tenant_id to leads (new migration + FK), built TenantScope + BelongsToTenant trait, attached to Lead model. Hit and resolved a real partial-migration failure (orphaned column from a failed FK constraint) and a Fillable-blocked mass assignment (fixed with forceCreate). Proved tenant isolation live: two tenants, two leads, each request only ever saw its own tenant's data. |
