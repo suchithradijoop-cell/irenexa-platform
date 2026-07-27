@@ -14,8 +14,8 @@ Use everyday examples (shopping, food, daily life) before code examples.
 
 ## 📍 Currently On
 
-**Phase 4 — Architecture**
-**Lesson 4.5 — Building a Real Feature End-to-End**
+**Phase 5 — Multi-Tenancy**
+**Lesson 5.1 — What Is Multi-Tenancy, and Which Approach Should We Use?**
 Status: In progress (started 2026-07-22)
 
 ---
@@ -101,8 +101,19 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 4.3 | The Service Layer | ✅ |
 | 4.4 | Form Requests & Clean Boundaries Between Layers | ✅ |
 | 4.5 | Building a Real Feature End-to-End (Controller + Service + Repository, real code) | ✅ |
-| 4.6 | Clean Architecture Recap & IRENEXA Folder Structure | ⬜ |
-## Phase 5 — Multi-Tenancy (built from scratch, no packages) ⬜
+| 4.6 | Clean Architecture Recap & IRENEXA Folder Structure | ✅ |
+
+**Phase 4 complete.**
+## Phase 5 — Multi-Tenancy (built from scratch, no packages) 🔄
+
+| # | Lesson | Status |
+|---|--------|--------|
+| 5.1 | What Is Multi-Tenancy, and Which Approach Should We Use? | 🔄 |
+| 5.2 | Tenants Table & "Who Is The Current Tenant Right Now?" | ⬜ |
+| 5.3 | Middleware: Resolving the Tenant From the Request | ⬜ |
+| 5.4 | Global Scopes: Automatically Filtering Every Query by Tenant | ⬜ |
+| 5.5 | Automatically Stamping New Records with the Tenant ID | ⬜ |
+| 5.6 | Testing Tenant Isolation & Retrofitting the Lead Feature | ⬜ |
 ## Phase 6 — Authentication ⬜
 ## Phase 7 — Authorization ⬜
 ## Phase 8 — CRM Core ⬜
