@@ -18,13 +18,16 @@ class ResolveTenant
 
     public function handle(Request $request, Closure $next): Response
     {
-        $slug = $request->header('X-Tenant');
+        // Tenant now comes from the verified, logged-in user — never from a
+        // client-supplied header. auth:sanctum always runs before this
+        // middleware (see routes/api.php), so $request->user() is trusted.
+        $user = $request->user();
 
-        if (! $slug) {
-            abort(400, 'Missing X-Tenant header.');
+        if (! $user || ! $user->tenant_id) {
+            abort(403, 'This account is not linked to a tenant.');
         }
 
-        $tenant = Tenant::where('slug', $slug)->first();
+        $tenant = Tenant::find($user->tenant_id);
 
         if (! $tenant) {
             abort(404, 'Tenant not found.');
