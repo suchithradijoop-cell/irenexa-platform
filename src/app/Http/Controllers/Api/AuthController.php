@@ -9,12 +9,18 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
     public function __construct(
         protected AuthService $authService,
     ) {}
+
+    public function me(Request $request): JsonResponse
+    {
+        return response()->json($request->user());
+    }
 
     public function register(RegisterRequest $request): JsonResponse
     {
