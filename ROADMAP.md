@@ -15,7 +15,7 @@ Use everyday examples (shopping, food, daily life) before code examples.
 ## 📍 Currently On
 
 **Phase 5 — Multi-Tenancy**
-**Lesson 5.4 — Global Scopes: Automatically Filtering Every Query by Tenant**
+**Lesson 5.6 — Testing Tenant Isolation (last lesson in Phase 5)**
 Status: In progress (started 2026-07-22)
 
 ---
@@ -112,8 +112,8 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 5.2 | Tenants Table & "Who Is The Current Tenant Right Now?" | ✅ |
 | 5.3 | Middleware: Resolving the Tenant From the Request | ✅ |
 | 5.4 | Global Scopes: Automatically Filtering Every Query by Tenant | ✅ |
-| 5.5 | Automatically Stamping New Records with the Tenant ID | ⬜ |
-| 5.6 | Testing Tenant Isolation & Retrofitting the Lead Feature | ⬜ |
+| 5.5 | Automatically Stamping New Records with the Tenant ID | ✅ |
+| 5.6 | Testing Tenant Isolation & Retrofitting the Lead Feature | 🔄 |
 ## Phase 6 — Authentication ⬜
 ## Phase 7 — Authorization ⬜
 ## Phase 8 — CRM Core ⬜
