@@ -15,7 +15,7 @@ Use everyday examples (shopping, food, daily life) before code examples.
 ## 📍 Currently On
 
 **Phase 6 — Authentication**
-**Lesson 6.3 — Building Registration**
+**Lesson 6.4 — Building Login & Issuing API Tokens (Sanctum)**
 Status: In progress (started 2026-07-22)
 
 ---
@@ -122,8 +122,8 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 |---|--------|--------|
 | 6.1 | Authentication Fundamentals: Sessions vs Tokens | ✅ |
 | 6.2 | Password Hashing & Why We Never Store Plain Passwords | ✅ |
-| 6.3 | Building Registration (POST /api/register) | 🔄 |
-| 6.4 | Building Login & Issuing API Tokens (Laravel Sanctum) | ⬜ |
+| 6.3 | Building Registration (POST /api/register) | ✅ |
+| 6.4 | Building Login & Issuing API Tokens (Laravel Sanctum) | 🔄 |
 | 6.5 | Protecting Routes: auth:sanctum & Getting the Current User | ⬜ |
 | 6.6 | Connecting Auth to Multi-Tenancy: Which Tenant Does This User Belong To? | ⬜ |
 ## Phase 7 — Authorization ⬜

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\LeadController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('tenant')->group(function () {
     Route::get('/leads', [LeadController::class, 'index']);
