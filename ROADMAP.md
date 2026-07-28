@@ -113,7 +113,9 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 5.3 | Middleware: Resolving the Tenant From the Request | ✅ |
 | 5.4 | Global Scopes: Automatically Filtering Every Query by Tenant | ✅ |
 | 5.5 | Automatically Stamping New Records with the Tenant ID | ✅ |
-| 5.6 | Testing Tenant Isolation & Retrofitting the Lead Feature | 🔄 |
+| 5.6 | Testing Tenant Isolation & Retrofitting the Lead Feature | ✅ |
+
+**Phase 5 complete.**
 ## Phase 6 — Authentication ⬜
 ## Phase 7 — Authorization ⬜
 ## Phase 8 — CRM Core ⬜
@@ -161,3 +163,5 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 2026-07-22 | Lesson 5.2 done | Built tenants table, Tenant model, TenantContext singleton (registered in AppServiceProvider). |
 | 2026-07-22 | Lesson 5.3 done | Built ResolveTenant middleware (X-Tenant header), aliased as 'tenant', applied to lead routes. Tested live: missing header → 400, valid header → passes through. |
 | 2026-07-22 | Lesson 5.4 done | Added tenant_id to leads (new migration + FK), built TenantScope + BelongsToTenant trait, attached to Lead model. Hit and resolved a real partial-migration failure (orphaned column from a failed FK constraint) and a Fillable-blocked mass assignment (fixed with forceCreate). Proved tenant isolation live: two tenants, two leads, each request only ever saw its own tenant's data. |
+| 2026-07-22 | Lesson 5.5 done | Extended BelongsToTenant to auto-stamp tenant_id on creation via the `creating` model event. Hit a real PHPStan finding (undefined property on generic Model type in the trait closure) — fixed using getAttribute()/setAttribute() instead of magic property access. Two-layer defense confirmed: Form Request strips unexpected tenant_id from input, trait auto-stamps the trusted one. |
+| 2026-07-22 | Lesson 5.6 done | Added TenantFactory, LeadFactory, and TenantIsolationTest (2 feature tests: cross-tenant read isolation, anti-spoofing on create). Hit a real test failure — direct `create()` in test setup was silently stripped by Fillable protection, same gotcha as Lesson 5.4's Tinker tests — fixed with `forceCreate()`. All 4 tests passing. **Phase 5 complete — multi-tenancy built from scratch, proven live and automatically tested.** |
