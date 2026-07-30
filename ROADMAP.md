@@ -14,8 +14,8 @@ Use everyday examples (shopping, food, daily life) before code examples.
 
 ## 📍 Currently On
 
-**Phase 6 — Authentication**
-**Lesson 6.6 — Connecting Auth to Multi-Tenancy (last lesson in Phase 6)**
+**Phase 7 — Authorization**
+**Lesson 7.3 — Laravel Policies**
 Status: In progress (started 2026-07-22)
 
 ---
@@ -125,8 +125,19 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 6.3 | Building Registration (POST /api/register) | ✅ |
 | 6.4 | Building Login & Issuing API Tokens (Laravel Sanctum) | ✅ |
 | 6.5 | Protecting Routes: auth:sanctum & Getting the Current User | ✅ |
-| 6.6 | Connecting Auth to Multi-Tenancy: Which Tenant Does This User Belong To? | 🔄 |
-## Phase 7 — Authorization ⬜
+| 6.6 | Connecting Auth to Multi-Tenancy: Which Tenant Does This User Belong To? | ✅ |
+
+**Phase 6 complete.**
+## Phase 7 — Authorization 🔄
+
+| # | Lesson | Status |
+|---|--------|--------|
+| 7.1 | Authentication vs Authorization: The Real Difference | ✅ |
+| 7.2 | Laravel Gates: Simple Yes/No Permission Checks | ✅ |
+| 7.3 | Laravel Policies: Organizing Permissions Per Model | 🔄 |
+| 7.4 | Roles: Admin vs Regular User (within a tenant) | ⬜ |
+| 7.5 | Wiring Policies into Form Requests' authorize() | ⬜ |
+| 7.6 | Testing Authorization | ⬜ |
 ## Phase 8 — CRM Core ⬜
 ## Phase 9 — Workflow Engine ⬜
 ## Phase 10 — API (REST, API-first, Swagger/OpenAPI) ⬜
