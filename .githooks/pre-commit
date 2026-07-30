@@ -12,7 +12,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Running PHPStan (bug check)..."
-docker compose exec -T app vendor/bin/phpstan analyse --no-progress
+docker compose exec -T app vendor/bin/phpstan analyse --no-progress --memory-limit=512M
 if [ $? -ne 0 ]; then
     echo ""
     echo "PHPStan found a problem. Fix it before committing."
