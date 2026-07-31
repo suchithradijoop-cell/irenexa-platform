@@ -5,6 +5,13 @@ parameters:
     paths:
         - app
 
+    # By default, Larastan trusts only the @return docblock on a model's
+    # casts() method, and ignores the array you actually wrote inside it.
+    # That means a generic "array<string, string>" docblock silently lies
+    # about every cast, and enum casts like UserRole::class get treated as
+    # plain strings. Turning this on makes Larastan read the real code.
+    parseModelCastsMethod: true
+
     # Level 5 is a good honest starting point — strict enough to catch real
     # mistakes, not so strict it drowns us in noise while we're still learning.
     # We will raise this number as the codebase and our skills grow.

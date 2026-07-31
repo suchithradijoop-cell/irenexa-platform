@@ -15,8 +15,8 @@ Use everyday examples (shopping, food, daily life) before code examples.
 ## 📍 Currently On
 
 **Phase 7 — Authorization**
-**Lesson 7.3 — Laravel Policies**
-Status: In progress (started 2026-07-22)
+**Lesson 7.5 — Wiring Policies into Form Requests' authorize()**
+Status: Not started
 
 ---
 
@@ -134,8 +134,8 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 |---|--------|--------|
 | 7.1 | Authentication vs Authorization: The Real Difference | ✅ |
 | 7.2 | Laravel Gates: Simple Yes/No Permission Checks | ✅ |
-| 7.3 | Laravel Policies: Organizing Permissions Per Model | 🔄 |
-| 7.4 | Roles: Admin vs Regular User (within a tenant) | ⬜ |
+| 7.3 | Laravel Policies: Organizing Permissions Per Model | ✅ |
+| 7.4 | Roles: Admin vs Regular User (within a tenant) | ✅ |
 | 7.5 | Wiring Policies into Form Requests' authorize() | ⬜ |
 | 7.6 | Testing Authorization | ⬜ |
 ## Phase 8 — CRM Core ⬜

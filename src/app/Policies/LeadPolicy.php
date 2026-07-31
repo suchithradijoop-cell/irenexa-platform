@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\UserRole;
 use App\Models\Lead;
 use App\Models\User;
 
@@ -31,7 +32,10 @@ class LeadPolicy
 
     public function delete(User $user, Lead $lead): bool
     {
-        return $user->tenant_id === $lead->tenant_id;
-        // NOTE: once roles exist (Lesson 7.4), this will tighten to managers only.
+        // Deleting is more dangerous than viewing or updating, so it now
+        // needs BOTH: same company (tenant match) AND admin role.
+        // A regular member can no longer delete leads at all.
+        return $user->tenant_id === $lead->tenant_id
+            && $user->role === UserRole::Admin;
     }
 }
