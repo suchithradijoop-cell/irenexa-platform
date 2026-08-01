@@ -6,7 +6,9 @@ namespace Tests\Feature;
 
 use App\Models\Lead;
 use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class TenantIsolationTest extends TestCase
@@ -30,8 +32,13 @@ class TenantIsolationTest extends TestCase
             'email' => 'b@example.com',
         ]);
 
-        $response = $this->withHeader('X-Tenant', 'tenant-a')
-            ->getJson('/api/leads');
+        // Tenant is no longer taken from a header — it comes from the
+        // logged-in user (Lesson 6.6). So the test must log a real
+        // user in, belonging to tenant A, instead of sending a header.
+        $userInTenantA = User::factory()->create(['tenant_id' => $tenantA->id]);
+        Sanctum::actingAs($userInTenantA);
+
+        $response = $this->getJson('/api/leads');
 
         $response->assertOk();
         $response->assertJsonCount(1);
@@ -42,13 +49,14 @@ class TenantIsolationTest extends TestCase
     public function test_creating_a_lead_automatically_stamps_the_current_tenant(): void
     {
         $tenant = Tenant::factory()->create(['slug' => 'tenant-c']);
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
 
-        $response = $this->withHeader('X-Tenant', 'tenant-c')
-            ->postJson('/api/leads', [
-                'name' => 'New Lead',
-                'email' => 'new@example.com',
-                'tenant_id' => 999, // attempted spoof — must be ignored
-            ]);
+        $response = $this->postJson('/api/leads', [
+            'name' => 'New Lead',
+            'email' => 'new@example.com',
+            'tenant_id' => 999, // attempted spoof — must be ignored
+        ]);
 
         $response->assertCreated();
 
@@ -61,5 +69,13 @@ class TenantIsolationTest extends TestCase
             'name' => 'New Lead',
             'tenant_id' => 999,
         ]);
+    }
+
+    public function test_a_guest_cannot_see_any_leads(): void
+    {
+        // No Sanctum::actingAs() — nobody is logged in.
+        $response = $this->getJson('/api/leads');
+
+        $response->assertUnauthorized(); // 401
     }
 }

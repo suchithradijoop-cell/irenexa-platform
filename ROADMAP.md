@@ -14,9 +14,9 @@ Use everyday examples (shopping, food, daily life) before code examples.
 
 ## 📍 Currently On
 
-**Phase 7 — Authorization**
-**Lesson 7.6 — Testing Authorization**
-Status: Not started
+**Phase 7 — Authorization: ✅ COMPLETE**
+**Phase 8 — CRM Core**
+Status: Not started — lessons not yet broken down
 
 ---
 
@@ -128,7 +128,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 6.6 | Connecting Auth to Multi-Tenancy: Which Tenant Does This User Belong To? | ✅ |
 
 **Phase 6 complete.**
-## Phase 7 — Authorization 🔄
+## Phase 7 — Authorization ✅
 
 | # | Lesson | Status |
 |---|--------|--------|
@@ -137,7 +137,9 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 7.3 | Laravel Policies: Organizing Permissions Per Model | ✅ |
 | 7.4 | Roles: Admin vs Regular User (within a tenant) | ✅ |
 | 7.5 | Wiring Policies into Form Requests' authorize() | ✅ |
-| 7.6 | Testing Authorization | ⬜ |
+| 7.6 | Testing Authorization | ✅ |
+
+**Phase 7 complete.**
 ## Phase 8 — CRM Core ⬜
 ## Phase 9 — Workflow Engine ⬜
 ## Phase 10 — API (REST, API-first, Swagger/OpenAPI) ⬜
