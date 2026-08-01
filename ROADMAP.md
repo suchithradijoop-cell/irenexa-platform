@@ -16,7 +16,8 @@ Use everyday examples (shopping, food, daily life) before code examples.
 
 **Phase 7 — Authorization: ✅ COMPLETE**
 **Phase 8 — CRM Core**
-Status: Not started — lessons not yet broken down
+**Lesson 8.2 — Contacts: migration, model, tenant scoping**
+Status: Not started
 
 ---
 
@@ -140,7 +141,19 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 7.6 | Testing Authorization | ✅ |
 
 **Phase 7 complete.**
-## Phase 8 — CRM Core ⬜
+## Phase 8 — CRM Core 🔄
+
+| # | Lesson | Status |
+|---|--------|--------|
+| 8.1 | CRM Domain Modeling: Contacts, Companies, Deals (concept + relationships) | ✅ |
+| 8.2 | Contacts: migration, model, tenant scoping | ⬜ |
+| 8.3 | Companies: migration, model, relationship to Contacts | ⬜ |
+| 8.4 | Deals: pipeline stages enum, migration, model, relationships | ⬜ |
+| 8.5 | Repositories + Services for Contacts, Companies, Deals | ⬜ |
+| 8.6 | API endpoints: routes, controllers, Form Requests, Policies | ⬜ |
+| 8.7 | Lead → Deal conversion workflow (real business logic) | ⬜ |
+| 8.8 | Activities: notes/calls/tasks attached to any CRM entity (polymorphic relationships) | ⬜ |
+| 8.9 | Testing CRM Core end-to-end | ⬜ |
 ## Phase 9 — Workflow Engine ⬜
 ## Phase 10 — API (REST, API-first, Swagger/OpenAPI) ⬜
 ## Phase 11 — Redis ⬜
