@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Models\Lead;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreLeadRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // We don't have authentication or permissions yet (those are
-        // Phase 6 and Phase 7). For now, everyone is allowed through.
-        // This is the one line that will change once real login exists.
-        return true;
+        // Ask the SAME question LeadPolicy::create() already knows how to
+        // answer, instead of hardcoding an answer here. One rule, one home.
+        // $this->user() works here because auth:sanctum has already run
+        // (it's earlier in the route middleware group than this request).
+        return $this->user()->can('create', Lead::class);
     }
 
     public function rules(): array
