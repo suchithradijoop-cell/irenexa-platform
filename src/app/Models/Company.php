@@ -22,4 +22,12 @@ class Company extends Model
     {
         return $this->hasMany(Contact::class);
     }
+
+    /**
+     * @return HasMany<Deal, $this>
+     */
+    public function deals(): HasMany
+    {
+        return $this->hasMany(Deal::class);
+    }
 }

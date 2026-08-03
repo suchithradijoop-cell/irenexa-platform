@@ -16,7 +16,7 @@ Use everyday examples (shopping, food, daily life) before code examples.
 
 **Phase 7 — Authorization: ✅ COMPLETE**
 **Phase 8 — CRM Core**
-**Lesson 8.4 — Deals: pipeline stages enum, migration, model, relationships**
+**Lesson 8.5 — Repositories + Services for Contacts, Companies, Deals**
 Status: Not started
 
 ---
@@ -148,7 +148,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 8.1 | CRM Domain Modeling: Contacts, Companies, Deals (concept + relationships) | ✅ |
 | 8.2 | Contacts: migration, model, tenant scoping | ✅ |
 | 8.3 | Companies: migration, model, relationship to Contacts | ✅ |
-| 8.4 | Deals: pipeline stages enum, migration, model, relationships | ⬜ |
+| 8.4 | Deals: pipeline stages enum, migration, model, relationships | ✅ |
 | 8.5 | Repositories + Services for Contacts, Companies, Deals | ⬜ |
 | 8.6 | API endpoints: routes, controllers, Form Requests, Policies | ⬜ |
 | 8.7 | Lead → Deal conversion workflow (real business logic) | ⬜ |
