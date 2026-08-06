@@ -24,4 +24,11 @@ class EloquentLeadRepository implements LeadRepositoryInterface
     {
         return Lead::create($data);
     }
+
+    public function update(Lead $lead, array $data): Lead
+    {
+        $lead->update($data);
+
+        return $lead;
+    }
 }

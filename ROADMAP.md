@@ -16,7 +16,7 @@ Use everyday examples (shopping, food, daily life) before code examples.
 
 **Phase 7 — Authorization: ✅ COMPLETE**
 **Phase 8 — CRM Core**
-**Lesson 8.7 — Lead → Deal conversion workflow (real business logic)**
+**Lesson 8.8 — Activities: notes/calls/tasks attached to any CRM entity (polymorphic relationships)**
 Status: Not started
 
 ---
@@ -151,7 +151,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 8.4 | Deals: pipeline stages enum, migration, model, relationships | ✅ |
 | 8.5 | Repositories + Services for Contacts, Companies, Deals | ✅ |
 | 8.6 | API endpoints: routes, controllers, Form Requests, Policies | ✅ |
-| 8.7 | Lead → Deal conversion workflow (real business logic) | ⬜ |
+| 8.7 | Lead → Deal conversion workflow (real business logic) | ✅ |
 | 8.8 | Activities: notes/calls/tasks attached to any CRM entity (polymorphic relationships) | ⬜ |
 | 8.9 | Testing CRM Core end-to-end | ⬜ |
 ## Phase 9 — Workflow Engine ⬜

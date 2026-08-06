@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->get('/me', [AuthController::class, 'me']);
 Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
     Route::get('/leads', [LeadController::class, 'index']);
     Route::post('/leads', [LeadController::class, 'store']);
+    Route::post('/leads/{lead}/convert', [LeadController::class, 'convert']);
 
     Route::get('/contacts', [ContactController::class, 'index']);
     Route::post('/contacts', [ContactController::class, 'store']);

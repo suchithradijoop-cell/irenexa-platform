@@ -14,4 +14,6 @@ interface LeadRepositoryInterface
     public function find(int $id): ?Lead;
 
     public function create(array $data): Lead;
+
+    public function update(Lead $lead, array $data): Lead;
 }
