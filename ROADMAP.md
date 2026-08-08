@@ -8,15 +8,27 @@
 ---
 
 ## 🗣️ Teaching Style Note (important — read every session)
-Use **very simple English**. Short sentences. No fancy words. No heavy jargon.
-Explain like talking to a friend, not writing a technical document.
-Use everyday examples (shopping, food, daily life) before code examples.
+In CHAT responses only: explain concepts (the "what is this" / "why" /
+"real-life example" / code-line-by-line parts) in simple Malayalam mixed
+naturally with English technical words (the way Kerala developers actually
+talk — "ithu oru Repository aanu", not forced pure Malayalam). Treat the
+user as a **nontechnical person**, not just a 2-year-experience developer —
+assume nothing, explain every term the first time it shows up. Short
+sentences, no heavy jargon, everyday examples (shopping, food, daily life)
+before code examples.
+
+**Hard rule — English only, no exceptions, anywhere in the repo:**
+ROADMAP.md, this file's own text, all code, code comments, docblocks,
+commit messages, ADRs, README, and every other file written to the
+project must always be 100% English. This project is a public portfolio
+for job hunting — Malayalam is a spoken-explanation aid in chat only, and
+must never appear in anything saved to the repository.
 
 ## 📍 Currently On
 
 **Phase 7 — Authorization: ✅ COMPLETE**
 **Phase 8 — CRM Core**
-**Lesson 8.8 — Activities: notes/calls/tasks attached to any CRM entity (polymorphic relationships)**
+**Lesson 8.9 — Testing CRM Core end-to-end**
 Status: Not started
 
 ---
@@ -152,7 +164,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 8.5 | Repositories + Services for Contacts, Companies, Deals | ✅ |
 | 8.6 | API endpoints: routes, controllers, Form Requests, Policies | ✅ |
 | 8.7 | Lead → Deal conversion workflow (real business logic) | ✅ |
-| 8.8 | Activities: notes/calls/tasks attached to any CRM entity (polymorphic relationships) | ⬜ |
+| 8.8 | Activities: notes/calls/tasks attached to any CRM entity (polymorphic relationships) | ✅ |
 | 8.9 | Testing CRM Core end-to-end | ⬜ |
 ## Phase 9 — Workflow Engine ⬜
 ## Phase 10 — API (REST, API-first, Swagger/OpenAPI) ⬜

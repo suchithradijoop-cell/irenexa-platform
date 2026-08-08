@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\ContactController;
@@ -27,4 +28,8 @@ Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
 
     Route::get('/deals', [DealController::class, 'index']);
     Route::post('/deals', [DealController::class, 'store']);
+
+    Route::post('/contacts/{contact}/activities', [ActivityController::class, 'storeForContact']);
+    Route::post('/companies/{company}/activities', [ActivityController::class, 'storeForCompany']);
+    Route::post('/deals/{deal}/activities', [ActivityController::class, 'storeForDeal']);
 });

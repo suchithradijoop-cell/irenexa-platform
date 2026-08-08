@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\ActivityRepositoryInterface;
 use App\Repositories\Contracts\CompanyRepositoryInterface;
 use App\Repositories\Contracts\ContactRepositoryInterface;
 use App\Repositories\Contracts\DealRepositoryInterface;
 use App\Repositories\Contracts\LeadRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Repositories\EloquentActivityRepository;
 use App\Repositories\EloquentCompanyRepository;
 use App\Repositories\EloquentContactRepository;
 use App\Repositories\EloquentDealRepository;
@@ -43,6 +45,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             DealRepositoryInterface::class,
             EloquentDealRepository::class,
+        );
+
+        $this->app->bind(
+            ActivityRepositoryInterface::class,
+            EloquentActivityRepository::class,
         );
     }
 }
