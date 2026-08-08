@@ -27,9 +27,9 @@ must never appear in anything saved to the repository.
 ## 📍 Currently On
 
 **Phase 7 — Authorization: ✅ COMPLETE**
-**Phase 8 — CRM Core**
-**Lesson 8.9 — Testing CRM Core end-to-end**
-Status: Not started
+**Phase 8 — CRM Core: ✅ COMPLETE**
+**Phase 9 — Workflow Engine**
+Status: Not started — lessons not yet broken down
 
 ---
 
@@ -153,7 +153,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 7.6 | Testing Authorization | ✅ |
 
 **Phase 7 complete.**
-## Phase 8 — CRM Core 🔄
+## Phase 8 — CRM Core ✅
 
 | # | Lesson | Status |
 |---|--------|--------|
@@ -165,7 +165,9 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 8.6 | API endpoints: routes, controllers, Form Requests, Policies | ✅ |
 | 8.7 | Lead → Deal conversion workflow (real business logic) | ✅ |
 | 8.8 | Activities: notes/calls/tasks attached to any CRM entity (polymorphic relationships) | ✅ |
-| 8.9 | Testing CRM Core end-to-end | ⬜ |
+| 8.9 | Testing CRM Core end-to-end | ✅ |
+
+**Phase 8 complete.**
 ## Phase 9 — Workflow Engine ⬜
 ## Phase 10 — API (REST, API-first, Swagger/OpenAPI) ⬜
 ## Phase 11 — Redis ⬜
