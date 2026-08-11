@@ -21,6 +21,7 @@ class LeadConversionService
         protected ContactRepositoryInterface $contacts,
         protected CompanyRepositoryInterface $companies,
         protected DealRepositoryInterface $deals,
+        protected WorkflowEngine $workflowEngine,
     ) {}
 
     public function convert(Lead $lead, string $companyName, string $dealTitle, float $dealAmount): Deal
@@ -30,7 +31,7 @@ class LeadConversionService
         // Company and Contact already created in this same call are
         // automatically rolled back too — no half-converted Lead is
         // ever left behind.
-        return DB::transaction(function () use ($lead, $companyName, $dealTitle, $dealAmount) {
+        $deal = DB::transaction(function () use ($lead, $companyName, $dealTitle, $dealAmount) {
             $company = $this->companies->create([
                 'name' => $companyName,
             ]);
@@ -57,5 +58,17 @@ class LeadConversionService
 
             return $deal;
         });
+
+        // Deliberately AFTER the transaction, not inside it. The Deal is
+        // already safely committed by this point — a broken or
+        // misconfigured automation rule must never be able to undo a
+        // successful Lead conversion. Automation is layered on top of
+        // the core business transaction, not a dependency of it.
+        $this->workflowEngine->fire('lead.converted', [
+            'subject' => $deal,
+            'deal_amount' => (float) $deal->amount,
+        ]);
+
+        return $deal;
     }
 }

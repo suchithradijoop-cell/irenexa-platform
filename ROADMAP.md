@@ -29,7 +29,7 @@ must never appear in anything saved to the repository.
 **Phase 7 — Authorization: ✅ COMPLETE**
 **Phase 8 — CRM Core: ✅ COMPLETE**
 **Phase 9 — Workflow Engine**
-**Lesson 9.5 — Wiring the engine into Lead conversion (a real trigger point)**
+**Lesson 9.6 — Testing the Workflow Engine**
 Status: Not started
 
 ---
@@ -177,7 +177,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 9.2 | WorkflowRule: migration, model, tenant-scoped configuration | ✅ |
 | 9.3 | Actions: the Strategy Pattern (building the first real action) | ✅ |
 | 9.4 | WorkflowEngine service: matching triggers to rules, running actions | ✅ |
-| 9.5 | Wiring the engine into Lead conversion (a real trigger point) | ⬜ |
+| 9.5 | Wiring the engine into Lead conversion (a real trigger point) | ✅ |
 | 9.6 | Testing the Workflow Engine | ⬜ |
 ## Phase 10 — API (REST, API-first, Swagger/OpenAPI) ⬜
 ## Phase 11 — Redis ⬜
