@@ -38,7 +38,7 @@ class TenantIsolationTest extends TestCase
         $userInTenantA = User::factory()->create(['tenant_id' => $tenantA->id]);
         Sanctum::actingAs($userInTenantA);
 
-        $response = $this->getJson('/api/leads');
+        $response = $this->getJson('/api/v1/leads');
 
         $response->assertOk();
         // Lesson 10.2: LeadResource::collection() wraps output in a
@@ -55,7 +55,7 @@ class TenantIsolationTest extends TestCase
         $user = User::factory()->create(['tenant_id' => $tenant->id]);
         Sanctum::actingAs($user);
 
-        $response = $this->postJson('/api/leads', [
+        $response = $this->postJson('/api/v1/leads', [
             'name' => 'New Lead',
             'email' => 'new@example.com',
             'tenant_id' => 999, // attempted spoof — must be ignored
@@ -77,7 +77,7 @@ class TenantIsolationTest extends TestCase
     public function test_a_guest_cannot_see_any_leads(): void
     {
         // No Sanctum::actingAs() — nobody is logged in.
-        $response = $this->getJson('/api/leads');
+        $response = $this->getJson('/api/v1/leads');
 
         $response->assertUnauthorized(); // 401
     }

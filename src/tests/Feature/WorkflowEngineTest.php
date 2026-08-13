@@ -36,7 +36,7 @@ class WorkflowEngineTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->postJson("/api/leads/{$lead->id}/convert", [
+        $response = $this->postJson("/api/v1/leads/{$lead->id}/convert", [
             'company_name' => 'Acme Prospect',
             'deal_title' => 'First deal',
             'deal_amount' => 12000,
@@ -74,7 +74,7 @@ class WorkflowEngineTest extends TestCase
         // deal_amount (12000) is below the rule's threshold (100000) —
         // conversion itself must still succeed; only the automation
         // should be skipped.
-        $response = $this->postJson("/api/leads/{$lead->id}/convert", [
+        $response = $this->postJson("/api/v1/leads/{$lead->id}/convert", [
             'company_name' => 'Small Prospect',
             'deal_title' => 'Small deal',
             'deal_amount' => 12000,
@@ -108,7 +108,7 @@ class WorkflowEngineTest extends TestCase
 
         Sanctum::actingAs($userInTenantA);
 
-        $response = $this->postJson("/api/leads/{$leadInTenantA->id}/convert", [
+        $response = $this->postJson("/api/v1/leads/{$leadInTenantA->id}/convert", [
             'company_name' => 'Tenant A Prospect',
             'deal_title' => 'Tenant A deal',
             'deal_amount' => 5000,

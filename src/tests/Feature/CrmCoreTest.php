@@ -30,7 +30,7 @@ class CrmCoreTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->postJson("/api/leads/{$lead->id}/convert", [
+        $response = $this->postJson("/api/v1/leads/{$lead->id}/convert", [
             'company_name' => 'Prospect Inc',
             'deal_title' => 'Annual contract',
             'deal_amount' => 12000,
@@ -55,7 +55,7 @@ class CrmCoreTest extends TestCase
 
         Sanctum::actingAs($userInTenantA);
 
-        $response = $this->postJson('/api/contacts', [
+        $response = $this->postJson('/api/v1/contacts', [
             'name' => 'Someone',
             'email' => 'someone@example.com',
             'company_id' => $companyInTenantB->id,
@@ -76,7 +76,7 @@ class CrmCoreTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->postJson("/api/contacts/{$contact->id}/activities", [
+        $response = $this->postJson("/api/v1/contacts/{$contact->id}/activities", [
             'type' => 'call',
             'content' => 'Discussed renewal timeline.',
         ]);
@@ -101,7 +101,7 @@ class CrmCoreTest extends TestCase
         $userInTenantA = User::factory()->create(['tenant_id' => $tenantA->id]);
         Sanctum::actingAs($userInTenantA);
 
-        $response = $this->getJson('/api/contacts');
+        $response = $this->getJson('/api/v1/contacts');
 
         $response->assertOk();
         // Same "data" wrapping note as TenantIsolationTest — Lesson 10.2.

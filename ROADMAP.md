@@ -30,7 +30,7 @@ must never appear in anything saved to the repository.
 **Phase 8 — CRM Core: ✅ COMPLETE**
 **Phase 9 — Workflow Engine: ✅ COMPLETE**
 **Phase 10 — API**
-**Lesson 10.4 — Consistent error responses & API versioning (/api/v1)**
+**Lesson 10.5 — OpenAPI/Swagger documentation**
 Status: Not started
 
 ---
@@ -189,7 +189,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 10.1 | What Makes an API "RESTful" and "API-First"? (concept, versioning strategy) | ✅ |
 | 10.2 | API Resources: stop returning raw Models, control the JSON shape | ✅ |
 | 10.3 | Pagination: index endpoints shouldn't return everything at once | ✅ |
-| 10.4 | Consistent error responses & API versioning (/api/v1) | ⬜ |
+| 10.4 | Consistent error responses & API versioning (/api/v1) | ✅ |
 | 10.5 | OpenAPI/Swagger documentation | ⬜ |
 | 10.6 | Testing the API contract | ⬜ |
 ## Phase 11 — Redis ⬜
