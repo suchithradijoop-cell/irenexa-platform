@@ -29,9 +29,9 @@ must never appear in anything saved to the repository.
 **Phase 7 — Authorization: ✅ COMPLETE**
 **Phase 8 — CRM Core: ✅ COMPLETE**
 **Phase 9 — Workflow Engine: ✅ COMPLETE**
-**Phase 10 — API**
-**Lesson 10.6 — Testing the API contract**
-Status: Not started
+**Phase 10 — API: ✅ COMPLETE**
+**Phase 11 — Redis**
+Status: Not started — lessons not yet broken down
 
 ---
 
@@ -182,7 +182,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 9.6 | Testing the Workflow Engine | ✅ |
 
 **Phase 9 complete.**
-## Phase 10 — API (REST, API-first, Swagger/OpenAPI) 🔄
+## Phase 10 — API (REST, API-first, Swagger/OpenAPI) ✅
 
 | # | Lesson | Status |
 |---|--------|--------|
@@ -191,7 +191,9 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 10.3 | Pagination: index endpoints shouldn't return everything at once | ✅ |
 | 10.4 | Consistent error responses & API versioning (/api/v1) | ✅ |
 | 10.5 | OpenAPI/Swagger documentation | ✅ |
-| 10.6 | Testing the API contract | ⬜ |
+| 10.6 | Testing the API contract | ✅ |
+
+**Phase 10 complete.**
 ## Phase 11 — Redis ⬜
 ## Phase 12 — Queue ⬜
 ## Phase 13 — Events ⬜
@@ -236,3 +238,5 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 2026-07-22 | Lesson 5.4 done | Added tenant_id to leads (new migration + FK), built TenantScope + BelongsToTenant trait, attached to Lead model. Hit and resolved a real partial-migration failure (orphaned column from a failed FK constraint) and a Fillable-blocked mass assignment (fixed with forceCreate). Proved tenant isolation live: two tenants, two leads, each request only ever saw its own tenant's data. |
 | 2026-07-22 | Lesson 5.5 done | Extended BelongsToTenant to auto-stamp tenant_id on creation via the `creating` model event. Hit a real PHPStan finding (undefined property on generic Model type in the trait closure) — fixed using getAttribute()/setAttribute() instead of magic property access. Two-layer defense confirmed: Form Request strips unexpected tenant_id from input, trait auto-stamps the trusted one. |
 | 2026-07-22 | Lesson 5.6 done | Added TenantFactory, LeadFactory, and TenantIsolationTest (2 feature tests: cross-tenant read isolation, anti-spoofing on create). Hit a real test failure — direct `create()` in test setup was silently stripped by Fillable protection, same gotcha as Lesson 5.4's Tinker tests — fixed with `forceCreate()`. All 4 tests passing. **Phase 5 complete — multi-tenancy built from scratch, proven live and automatically tested.** |
+| 2026-08-13 | **Critical bug found & fixed (Lesson 10.6 test)** | `ApiContractTest::test_accessing_another_tenants_lead_returns_generic_not_found` caught a REAL cross-tenant data leak: `{lead}` route-model-binding resolves before `ResolveTenant` middleware sets `TenantContext` (middleware ordering not guaranteed for custom aliases vs. Laravel's internal `SubstituteBindings`), so `TenantScope::apply()` saw a null tenant and — because the old code only added a `WHERE tenant_id = ?` filter `if ($tenantId)` — silently added NO filter at all, exposing every tenant's rows during that window. Fixed by making `TenantScope` fail CLOSED instead of fail OPEN: `$builder->where('tenant_id', $tenantId ?? -1)` always filters, returning zero rows (not all rows) when the tenant isn't yet known. This is defense-in-depth's payoff — a scope written to be "safe by default" turned a middleware-ordering quirk into a harmless 404 instead of a real data leak. |
+| 2026-08-13 | **Root cause fixed + a second bug found** | The fail-closed TenantScope fix immediately exposed the real root cause: legitimate, same-tenant requests to `/leads/{lead}/convert` and `/contacts/{contact}/activities` started failing with 404 too — proving `ResolveTenant` genuinely runs AFTER route model binding for ALL requests, not just the malicious case. Fixed properly with `$middleware->priority([Authenticate::class, ResolveTenant::class, SubstituteBindings::class])` in `bootstrap/app.php`, forcing auth → tenant resolution → route-model-binding, in that order, always. Separately found the `ModelNotFoundException` render() handler (Lesson 10.4) was silently never matching — Laravel's `Handler::prepareException()` converts `ModelNotFoundException` to `NotFoundHttpException` (reusing its leaky message) BEFORE custom render callbacks are checked, so the type-hint had to change to `NotFoundHttpException`. Both bugs were caught entirely by automated tests, not manual inspection — the exact payoff Lesson 7.6 and 10.6 argued for. |

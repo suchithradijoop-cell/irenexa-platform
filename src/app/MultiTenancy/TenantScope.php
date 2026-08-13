@@ -14,8 +14,17 @@ class TenantScope implements Scope
     {
         $tenantId = app(TenantContext::class)->id();
 
-        if ($tenantId) {
-            $builder->where('tenant_id', $tenantId);
-        }
+        // FAIL CLOSED, not open. Before this fix, a null $tenantId meant
+        // "add no filter at all" — silently returning every tenant's
+        // rows. That is exactly backwards for a security boundary: if we
+        // don't yet know which tenant this request belongs to (e.g.
+        // route model binding running before ResolveTenant middleware
+        // has set the context — a real bug this project's own tests
+        // caught), the safe default is to show NOTHING, not everything.
+        //
+        // -1 can never match a real tenant_id (auto-increment starts at
+        // 1), so this reliably returns zero rows instead of needing a
+        // separate raw-SQL "always false" trick.
+        $builder->where('tenant_id', $tenantId ?? -1);
     }
 }
