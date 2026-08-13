@@ -29,8 +29,9 @@ must never appear in anything saved to the repository.
 **Phase 7 — Authorization: ✅ COMPLETE**
 **Phase 8 — CRM Core: ✅ COMPLETE**
 **Phase 9 — Workflow Engine: ✅ COMPLETE**
-**Phase 10 — API (REST, API-first, Swagger/OpenAPI)**
-Status: Not started — lessons not yet broken down
+**Phase 10 — API**
+**Lesson 10.2 — API Resources: stop returning raw Models, control the JSON shape**
+Status: Not started
 
 ---
 
@@ -181,7 +182,16 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 9.6 | Testing the Workflow Engine | ✅ |
 
 **Phase 9 complete.**
-## Phase 10 — API (REST, API-first, Swagger/OpenAPI) ⬜
+## Phase 10 — API (REST, API-first, Swagger/OpenAPI) 🔄
+
+| # | Lesson | Status |
+|---|--------|--------|
+| 10.1 | What Makes an API "RESTful" and "API-First"? (concept, versioning strategy) | ✅ |
+| 10.2 | API Resources: stop returning raw Models, control the JSON shape | ⬜ |
+| 10.3 | Pagination: index endpoints shouldn't return everything at once | ⬜ |
+| 10.4 | Consistent error responses & API versioning (/api/v1) | ⬜ |
+| 10.5 | OpenAPI/Swagger documentation | ⬜ |
+| 10.6 | Testing the API contract | ⬜ |
 ## Phase 11 — Redis ⬜
 ## Phase 12 — Queue ⬜
 ## Phase 13 — Events ⬜
