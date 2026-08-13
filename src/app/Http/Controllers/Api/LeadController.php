@@ -7,10 +7,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ConvertLeadRequest;
 use App\Http\Requests\StoreLeadRequest;
+use App\Http\Resources\DealResource;
+use App\Http\Resources\LeadResource;
 use App\Models\Lead;
 use App\Services\LeadConversionService;
 use App\Services\LeadService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class LeadController extends Controller
 {
@@ -19,16 +22,24 @@ class LeadController extends Controller
         protected LeadConversionService $leadConversionService,
     ) {}
 
-    public function index(): JsonResponse
+    public function index(): AnonymousResourceCollection
     {
-        return response()->json($this->leadService->listAll());
+        // Returning a Resource collection directly (not wrapped in
+        // response()->json()) is the normal Laravel style — Laravel
+        // knows how to turn a JsonResource into a proper JSON response
+        // on its own, with the correct Content-Type header.
+        return LeadResource::collection($this->leadService->listAll());
     }
 
     public function store(StoreLeadRequest $request): JsonResponse
     {
         $lead = $this->leadService->createLead($request->validated());
 
-        return response()->json($lead, 201);
+        // ->response() turns the Resource into a real JsonResponse so we
+        // can still set the 201 status code — a plain "return new
+        // LeadResource($lead)" would default to 200, which is wrong for
+        // a successful creation.
+        return (new LeadResource($lead))->response()->setStatusCode(201);
     }
 
     public function convert(ConvertLeadRequest $request, Lead $lead): JsonResponse
@@ -40,6 +51,6 @@ class LeadController extends Controller
             (float) $request->validated('deal_amount'),
         );
 
-        return response()->json($deal, 201);
+        return (new DealResource($deal))->response()->setStatusCode(201);
     }
 }

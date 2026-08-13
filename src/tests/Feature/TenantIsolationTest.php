@@ -41,7 +41,10 @@ class TenantIsolationTest extends TestCase
         $response = $this->getJson('/api/leads');
 
         $response->assertOk();
-        $response->assertJsonCount(1);
+        // Lesson 10.2: LeadResource::collection() wraps output in a
+        // top-level "data" key, so we now count items inside "data",
+        // not at the JSON root.
+        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment(['name' => 'Tenant A Lead']);
         $response->assertJsonMissing(['name' => 'Tenant B Lead']);
     }

@@ -6,8 +6,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCompanyRequest;
+use App\Http\Resources\CompanyResource;
 use App\Services\CompanyService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CompanyController extends Controller
 {
@@ -15,15 +17,15 @@ class CompanyController extends Controller
         protected CompanyService $companyService,
     ) {}
 
-    public function index(): JsonResponse
+    public function index(): AnonymousResourceCollection
     {
-        return response()->json($this->companyService->listAll());
+        return CompanyResource::collection($this->companyService->listAll());
     }
 
     public function store(StoreCompanyRequest $request): JsonResponse
     {
         $company = $this->companyService->createCompany($request->validated());
 
-        return response()->json($company, 201);
+        return (new CompanyResource($company))->response()->setStatusCode(201);
     }
 }

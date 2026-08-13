@@ -6,8 +6,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreContactRequest;
+use App\Http\Resources\ContactResource;
 use App\Services\ContactService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ContactController extends Controller
 {
@@ -15,15 +17,15 @@ class ContactController extends Controller
         protected ContactService $contactService,
     ) {}
 
-    public function index(): JsonResponse
+    public function index(): AnonymousResourceCollection
     {
-        return response()->json($this->contactService->listAll());
+        return ContactResource::collection($this->contactService->listAll());
     }
 
     public function store(StoreContactRequest $request): JsonResponse
     {
         $contact = $this->contactService->createContact($request->validated());
 
-        return response()->json($contact, 201);
+        return (new ContactResource($contact))->response()->setStatusCode(201);
     }
 }

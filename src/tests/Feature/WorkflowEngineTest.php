@@ -43,7 +43,9 @@ class WorkflowEngineTest extends TestCase
         ]);
 
         $response->assertCreated();
-        $dealId = $response->json('id');
+        // Lesson 10.2: DealResource responses are wrapped in a top-level
+        // "data" key, so the deal's id is at "data.id", not "id".
+        $dealId = $response->json('data.id');
 
         $this->assertDatabaseHas('activities', [
             'subject_type' => Deal::class,

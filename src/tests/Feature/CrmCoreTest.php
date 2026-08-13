@@ -104,7 +104,8 @@ class CrmCoreTest extends TestCase
         $response = $this->getJson('/api/contacts');
 
         $response->assertOk();
-        $response->assertJsonCount(1);
+        // Same "data" wrapping note as TenantIsolationTest — Lesson 10.2.
+        $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment(['name' => 'Tenant A Contact']);
         $response->assertJsonMissing(['name' => 'Tenant B Contact']);
     }
