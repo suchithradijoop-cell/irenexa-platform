@@ -9,6 +9,7 @@ use App\Http\Requests\StoreDealRequest;
 use App\Http\Resources\DealResource;
 use App\Services\DealService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DealController extends Controller
@@ -17,9 +18,11 @@ class DealController extends Controller
         protected DealService $dealService,
     ) {}
 
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return DealResource::collection($this->dealService->listAll());
+        return DealResource::collection(
+            $this->dealService->listPaginated($request->integer('per_page', 15)),
+        );
     }
 
     public function store(StoreDealRequest $request): JsonResponse

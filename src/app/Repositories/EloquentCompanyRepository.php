@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\Company;
 use App\Repositories\Contracts\CompanyRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class EloquentCompanyRepository implements CompanyRepositoryInterface
@@ -13,6 +14,11 @@ class EloquentCompanyRepository implements CompanyRepositoryInterface
     public function all(): Collection
     {
         return Company::all();
+    }
+
+    public function paginate(int $perPage): LengthAwarePaginator
+    {
+        return Company::paginate($perPage);
     }
 
     public function find(int $id): ?Company

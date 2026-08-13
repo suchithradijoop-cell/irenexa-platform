@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\Contact;
 use App\Repositories\Contracts\ContactRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class EloquentContactRepository implements ContactRepositoryInterface
@@ -13,6 +14,11 @@ class EloquentContactRepository implements ContactRepositoryInterface
     public function all(): Collection
     {
         return Contact::all();
+    }
+
+    public function paginate(int $perPage): LengthAwarePaginator
+    {
+        return Contact::paginate($perPage);
     }
 
     public function find(int $id): ?Contact

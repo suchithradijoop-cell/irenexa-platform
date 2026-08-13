@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Enums\DealStage;
 use App\Models\Deal;
 use App\Repositories\Contracts\DealRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class DealService
@@ -18,6 +19,13 @@ class DealService
     public function listAll(): Collection
     {
         return $this->deals->all();
+    }
+
+    public function listPaginated(int $perPage): LengthAwarePaginator
+    {
+        $perPage = max(1, min($perPage, 100));
+
+        return $this->deals->paginate($perPage);
     }
 
     public function createDeal(array $data): Deal

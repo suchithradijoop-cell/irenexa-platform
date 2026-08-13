@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Enums\LeadStatus;
 use App\Models\Lead;
 use App\Repositories\Contracts\LeadRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class LeadService
@@ -18,6 +19,18 @@ class LeadService
     public function listAll(): Collection
     {
         return $this->leads->all();
+    }
+
+    public function listPaginated(int $perPage): LengthAwarePaginator
+    {
+        // Clamped here, not trusted from the client — a request for
+        // per_page=999999 would defeat the entire point of pagination
+        // (loading everything at once, just via a different door).
+        // min/max keeps it inside a sane, fixed range regardless of
+        // what the client asks for.
+        $perPage = max(1, min($perPage, 100));
+
+        return $this->leads->paginate($perPage);
     }
 
     public function createLead(array $data): Lead

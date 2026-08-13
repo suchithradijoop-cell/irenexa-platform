@@ -13,6 +13,7 @@ use App\Models\Lead;
 use App\Services\LeadConversionService;
 use App\Services\LeadService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class LeadController extends Controller
@@ -22,13 +23,18 @@ class LeadController extends Controller
         protected LeadConversionService $leadConversionService,
     ) {}
 
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        // Returning a Resource collection directly (not wrapped in
-        // response()->json()) is the normal Laravel style — Laravel
-        // knows how to turn a JsonResource into a proper JSON response
-        // on its own, with the correct Content-Type header.
-        return LeadResource::collection($this->leadService->listAll());
+        // ?per_page=25 on the URL; defaults to 15 if not given.
+        // LeadService clamps this to a safe range — the controller
+        // doesn't need to know or enforce that limit itself.
+        $perPage = $request->integer('per_page', 15);
+
+        // Passing a LengthAwarePaginator (instead of a plain Collection)
+        // into ::collection() makes Laravel automatically add "links"
+        // and "meta" (current_page, total, per_page, etc.) to the JSON
+        // response — no extra code needed for that part.
+        return LeadResource::collection($this->leadService->listPaginated($perPage));
     }
 
     public function store(StoreLeadRequest $request): JsonResponse

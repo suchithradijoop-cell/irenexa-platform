@@ -9,6 +9,7 @@ use App\Http\Requests\StoreContactRequest;
 use App\Http\Resources\ContactResource;
 use App\Services\ContactService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ContactController extends Controller
@@ -17,9 +18,11 @@ class ContactController extends Controller
         protected ContactService $contactService,
     ) {}
 
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return ContactResource::collection($this->contactService->listAll());
+        return ContactResource::collection(
+            $this->contactService->listPaginated($request->integer('per_page', 15)),
+        );
     }
 
     public function store(StoreContactRequest $request): JsonResponse

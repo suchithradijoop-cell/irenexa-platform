@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Company;
 use App\Repositories\Contracts\CompanyRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class CompanyService
@@ -17,6 +18,13 @@ class CompanyService
     public function listAll(): Collection
     {
         return $this->companies->all();
+    }
+
+    public function listPaginated(int $perPage): LengthAwarePaginator
+    {
+        $perPage = max(1, min($perPage, 100));
+
+        return $this->companies->paginate($perPage);
     }
 
     public function createCompany(array $data): Company

@@ -7,6 +7,7 @@ namespace App\Repositories;
 use App\Enums\DealStage;
 use App\Models\Deal;
 use App\Repositories\Contracts\DealRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class EloquentDealRepository implements DealRepositoryInterface
@@ -14,6 +15,11 @@ class EloquentDealRepository implements DealRepositoryInterface
     public function all(): Collection
     {
         return Deal::all();
+    }
+
+    public function paginate(int $perPage): LengthAwarePaginator
+    {
+        return Deal::paginate($perPage);
     }
 
     public function find(int $id): ?Deal

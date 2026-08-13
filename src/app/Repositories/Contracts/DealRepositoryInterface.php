@@ -6,11 +6,14 @@ namespace App\Repositories\Contracts;
 
 use App\Enums\DealStage;
 use App\Models\Deal;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 interface DealRepositoryInterface
 {
     public function all(): Collection;
+
+    public function paginate(int $perPage): LengthAwarePaginator;
 
     public function find(int $id): ?Deal;
 
