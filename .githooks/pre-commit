@@ -4,7 +4,14 @@
 # If either check fails, the commit is blocked (exit 1 = stop).
 
 echo "Running Pint (code style check)..."
-docker compose exec -T app vendor/bin/pint --dirty
+# NOT --dirty: that flag needs "git diff" to work INSIDE the app
+# container, but docker-compose.yml only mounts ./src into it, not the
+# project root where .git actually lives. Git inside the container can
+# never see a repo, so --dirty always fails here. Checking the whole
+# app/ folder every time has no such dependency, and Pint is fast enough
+# that checking everything instead of just changed files isn't slow
+# at this project's size.
+docker compose exec -T app vendor/bin/pint
 if [ $? -ne 0 ]; then
     echo ""
     echo "Pint made changes or found a problem. Review the changes, add them, and commit again."
