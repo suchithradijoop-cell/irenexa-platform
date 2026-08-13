@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 #[Fillable(['title', 'amount', 'stage', 'contact_id', 'company_id'])]
 class Deal extends Model implements HasActivities
 {
-    use HasFactory, BelongsToTenant;
+    use BelongsToTenant, HasFactory;
 
     protected function casts(): array
     {

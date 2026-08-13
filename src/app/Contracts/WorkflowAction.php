@@ -15,9 +15,9 @@ namespace App\Contracts;
 interface WorkflowAction
 {
     /**
-     * @param array $config  Per-rule settings from WorkflowRule::$action_config
-     *                       (e.g. ['content' => 'Follow up with prospect'])
-     * @param array $context Data about what triggered this (e.g. ['subject' => $contact])
+     * @param  array  $config  Per-rule settings from WorkflowRule::$action_config
+     *                         (e.g. ['content' => 'Follow up with prospect'])
+     * @param  array  $context  Data about what triggered this (e.g. ['subject' => $contact])
      */
     public function execute(array $config, array $context): void;
 }

@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 #[Fillable(['name', 'email', 'phone', 'job_title', 'company_id'])]
 class Contact extends Model implements HasActivities
 {
-    use HasFactory, BelongsToTenant;
+    use BelongsToTenant, HasFactory;
 
     /**
      * @return BelongsTo<Company, $this>

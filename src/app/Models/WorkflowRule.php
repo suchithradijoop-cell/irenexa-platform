@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['trigger', 'conditions', 'action', 'action_config', 'is_active'])]
 class WorkflowRule extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use BelongsToTenant, HasFactory;
 
     protected function casts(): array
     {

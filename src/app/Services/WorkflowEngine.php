@@ -14,8 +14,8 @@ class WorkflowEngine
     ) {}
 
     /**
-     * @param array $context Data about what just happened — e.g.
-     *                       ['subject' => $contact, 'deal_amount' => 12000]
+     * @param  array  $context  Data about what just happened — e.g.
+     *                          ['subject' => $contact, 'deal_amount' => 12000]
      */
     public function fire(string $trigger, array $context): void
     {

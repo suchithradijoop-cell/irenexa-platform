@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['name', 'email', 'phone', 'status'])]
 class Lead extends Model
 {
-    use HasFactory, BelongsToTenant;
+    use BelongsToTenant, HasFactory;
 
     protected function casts(): array
     {
