@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Repositories\CachedContactRepository;
 use App\Repositories\Contracts\ActivityRepositoryInterface;
 use App\Repositories\Contracts\CompanyRepositoryInterface;
 use App\Repositories\Contracts\ContactRepositoryInterface;
@@ -32,9 +33,15 @@ class RepositoryServiceProvider extends ServiceProvider
             EloquentUserRepository::class,
         );
 
+        // Bound to the caching decorator, not EloquentContactRepository
+        // directly — every consumer of ContactRepositoryInterface (the
+        // ContactService, and anything else built against the interface)
+        // automatically gets caching with zero code changes on their side.
+        // That's the point of depending on an interface instead of a
+        // concrete class (Lesson 4.2).
         $this->app->bind(
             ContactRepositoryInterface::class,
-            EloquentContactRepository::class,
+            CachedContactRepository::class,
         );
 
         $this->app->bind(

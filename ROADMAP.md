@@ -31,7 +31,7 @@ must never appear in anything saved to the repository.
 **Phase 9 — Workflow Engine: ✅ COMPLETE**
 **Phase 10 — API: ✅ COMPLETE**
 **Phase 11 — Redis**
-Status: Not started — lessons not yet broken down
+Status: In progress — on Lesson 11.3
 
 ---
 
@@ -194,7 +194,17 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 10.6 | Testing the API contract | ✅ |
 
 **Phase 10 complete.**
-## Phase 11 — Redis ⬜
+## Phase 11 — Redis 🔄
+
+| # | Lesson | Status |
+|---|--------|--------|
+| 11.1 | What Is Redis and Why Do We Need It Alongside MySQL? | ✅ |
+| 11.2 | Laravel's Cache Facade & Configuring Redis as the Cache Driver | ✅ |
+| 11.3 | The Cache-Aside Pattern: Caching a Real Hot Endpoint (with tenant-safe cache keys) | 🔄 |
+| 11.4 | Cache Invalidation: Busting the Cache When Data Changes | ⬜ |
+| 11.5 | Redis for Rate Limiting (Protecting the API from Abuse) | ⬜ |
+| 11.6 | Testing Caching Behavior & Phase Recap | ⬜ |
+
 ## Phase 12 — Queue ⬜
 ## Phase 13 — Events ⬜
 ## Phase 14 — Notifications ⬜
