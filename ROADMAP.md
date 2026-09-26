@@ -30,8 +30,9 @@ must never appear in anything saved to the repository.
 **Phase 8 — CRM Core: ✅ COMPLETE**
 **Phase 9 — Workflow Engine: ✅ COMPLETE**
 **Phase 10 — API: ✅ COMPLETE**
-**Phase 11 — Redis**
-Status: In progress — on Lesson 11.5
+**Phase 11 — Redis: ✅ COMPLETE**
+**Phase 12 — Queue**
+Status: Not started — lessons not yet broken down
 
 ---
 
@@ -202,10 +203,12 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 11.2 | Laravel's Cache Facade & Configuring Redis as the Cache Driver | ✅ |
 | 11.3 | The Cache-Aside Pattern: Caching a Real Hot Endpoint (with tenant-safe cache keys) | ✅ |
 | 11.4 | Cache Invalidation: Busting the Cache When Data Changes | ✅ |
-| 11.5 | Redis for Rate Limiting (Protecting the API from Abuse) | 🔄 |
-| 11.6 | Testing Caching Behavior & Phase Recap | ⬜ |
+| 11.5 | Redis for Rate Limiting (Protecting the API from Abuse) | ✅ |
+| 11.6 | Testing Caching Behavior & Phase Recap | ✅ |
 
-## Phase 12 — Queue ⬜
+**Phase 11 complete.**
+
+## Phase 12 — Queue 🔄
 ## Phase 13 — Events ⬜
 ## Phase 14 — Notifications ⬜
 ## Phase 15 — MongoDB ⬜
@@ -250,3 +253,4 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 2026-07-22 | Lesson 5.6 done | Added TenantFactory, LeadFactory, and TenantIsolationTest (2 feature tests: cross-tenant read isolation, anti-spoofing on create). Hit a real test failure — direct `create()` in test setup was silently stripped by Fillable protection, same gotcha as Lesson 5.4's Tinker tests — fixed with `forceCreate()`. All 4 tests passing. **Phase 5 complete — multi-tenancy built from scratch, proven live and automatically tested.** |
 | 2026-08-13 | **Critical bug found & fixed (Lesson 10.6 test)** | `ApiContractTest::test_accessing_another_tenants_lead_returns_generic_not_found` caught a REAL cross-tenant data leak: `{lead}` route-model-binding resolves before `ResolveTenant` middleware sets `TenantContext` (middleware ordering not guaranteed for custom aliases vs. Laravel's internal `SubstituteBindings`), so `TenantScope::apply()` saw a null tenant and — because the old code only added a `WHERE tenant_id = ?` filter `if ($tenantId)` — silently added NO filter at all, exposing every tenant's rows during that window. Fixed by making `TenantScope` fail CLOSED instead of fail OPEN: `$builder->where('tenant_id', $tenantId ?? -1)` always filters, returning zero rows (not all rows) when the tenant isn't yet known. This is defense-in-depth's payoff — a scope written to be "safe by default" turned a middleware-ordering quirk into a harmless 404 instead of a real data leak. |
 | 2026-08-13 | **Root cause fixed + a second bug found** | The fail-closed TenantScope fix immediately exposed the real root cause: legitimate, same-tenant requests to `/leads/{lead}/convert` and `/contacts/{contact}/activities` started failing with 404 too — proving `ResolveTenant` genuinely runs AFTER route model binding for ALL requests, not just the malicious case. Fixed properly with `$middleware->priority([Authenticate::class, ResolveTenant::class, SubstituteBindings::class])` in `bootstrap/app.php`, forcing auth → tenant resolution → route-model-binding, in that order, always. Separately found the `ModelNotFoundException` render() handler (Lesson 10.4) was silently never matching — Laravel's `Handler::prepareException()` converts `ModelNotFoundException` to `NotFoundHttpException` (reusing its leaky message) BEFORE custom render callbacks are checked, so the type-hint had to change to `NotFoundHttpException`. Both bugs were caught entirely by automated tests, not manual inspection — the exact payoff Lesson 7.6 and 10.6 argued for. |
+| 2026-09-25 | **Phase 11 complete — Redis** | 11.1–11.2: verified Redis connectivity via Tinker, then found `CACHE_STORE` was still `database` (Laravel's default) — fixed in `.env` and the stale `.env.example` (also fixed `REDIS_HOST` there, still `127.0.0.1` from the unedited skeleton). 11.3: built `CachedContactRepository` — a Decorator around `EloquentContactRepository` implementing the same `ContactRepositoryInterface`, caching only `paginate()` with tenant-scoped keys, bound in `RepositoryServiceProvider` in place of the plain Eloquent repository (ADR 006). 11.4: replaced plain keys with Redis cache tags (`tenant:{id}:contacts`) so `create()` can invalidate every cached page for that tenant in one `flush()` call, without needing to enumerate every page/per_page combination. 11.5: added Redis-backed rate limiting — `RateLimiter::for('login', ...)` (5/min by IP, brute-force protection on `/register` and `/login`) and `RateLimiter::for('api', ...)` (60/min by authenticated user ID) in `AppServiceProvider`, applied via `throttle:login` / `throttle:api` middleware in `routes/api.php`. 11.6: added `CachingTest` (cache hit serves stale-safe data, create() busts the cache, per-tenant cache isolation) and `RateLimitingTest` (login limiter trips at 6 attempts/min, API limiter trips at 61 requests/min). Also fixed a real infrastructure issue along the way: PHPStan crashed hitting PHP's default 128M memory limit inside the `app` container — added `docker/php/php.ini` (`memory_limit = 512M`) copied into the image in `docker/php/Dockerfile`. |
