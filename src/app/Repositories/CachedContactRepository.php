@@ -46,7 +46,7 @@ class CachedContactRepository implements ContactRepositoryInterface
     {
         $page = Paginator::resolveCurrentPage('page');
 
-        return Cache::remember(
+        return Cache::tags($this->tag())->remember(
             $this->cacheKey($page, $perPage),
             self::TTL_SECONDS,
             fn () => $this->repository->paginate($perPage),
@@ -63,28 +63,33 @@ class CachedContactRepository implements ContactRepositoryInterface
 
     public function create(array $data): Contact
     {
-        return $this->repository->create($data);
+        $contact = $this->repository->create($data);
+
+        // Invalidation: a new contact just changed what every cached page
+        // of this tenant's contact list should contain. We don't know (and
+        // shouldn't need to know) every page/per_page combination that's
+        // currently cached — flushing the whole tag clears all of them in
+        // one call, because every entry cached under this tag was written
+        // through the same tag() method below.
+        Cache::tags($this->tag())->flush();
+
+        return $contact;
     }
 
     /**
-     * Tenant ID is part of the key on purpose. Without it, Tenant A's
-     * cached page 1 of contacts would be served straight to Tenant B —
-     * the same class of cross-tenant leak the TenantScope bug (Session
-     * Log, 2026-08-13) was, just moved from the database layer into the
-     * cache layer instead.
-     *
-     * Falls back to -1 (never a real tenant ID) if the tenant somehow
-     * isn't resolved yet, for the same fail-closed reason TenantScope
-     * does the same thing: an unknown tenant must never share a cache key
-     * with a known one.
+     * The tag scopes every cache entry (and the flush() above) to exactly
+     * this tenant's contacts — the same fail-closed reasoning as
+     * TenantScope: an unresolved tenant falls back to -1, never sharing a
+     * tag with a real tenant. Flushing this tag can only ever clear this
+     * tenant's own cached pages, never another tenant's.
      */
+    private function tag(): string
+    {
+        return sprintf('tenant:%d:contacts', $this->tenantContext->id() ?? -1);
+    }
+
     private function cacheKey(int $page, int $perPage): string
     {
-        return sprintf(
-            'tenant:%d:contacts:page:%d:per_page:%d',
-            $this->tenantContext->id() ?? -1,
-            $page,
-            $perPage,
-        );
+        return sprintf('contacts:page:%d:per_page:%d', $page, $perPage);
     }
 }
