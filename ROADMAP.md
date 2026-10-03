@@ -32,7 +32,7 @@ must never appear in anything saved to the repository.
 **Phase 10 — API: ✅ COMPLETE**
 **Phase 11 — Redis: ✅ COMPLETE**
 **Phase 12 — Queue**
-Status: Not started — lessons not yet broken down
+Status: In progress — on Lesson 12.2
 
 ---
 
@@ -209,6 +209,16 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 **Phase 11 complete.**
 
 ## Phase 12 — Queue 🔄
+
+| # | Lesson | Status |
+|---|--------|--------|
+| 12.1 | What Is a Queue and Why Does It Matter? (sync vs async work) | ✅ |
+| 12.2 | Laravel's Queue Internals: Jobs, Drivers, and the QUEUE_CONNECTION | 🔄 |
+| 12.3 | Building a Real Queued Job (moving WorkflowEngine execution off the request) | ⬜ |
+| 12.4 | Running Workers & Laravel Horizon (Redis-backed queue dashboard) | ⬜ |
+| 12.5 | Failed Jobs, Retries, and Backoff Strategy | ⬜ |
+| 12.6 | Testing Queued Jobs | ⬜ |
+
 ## Phase 13 — Events ⬜
 ## Phase 14 — Notifications ⬜
 ## Phase 15 — MongoDB ⬜
