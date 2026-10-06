@@ -20,6 +20,24 @@ services:
     networks:
       - irenexa
 
+  # Long-running queue worker supervisor (Laravel Horizon). Same image and
+  # code as `app`, but runs `php artisan horizon` instead of php-fpm — it
+  # is the process that actually picks jobs off the Redis queue.
+  horizon:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: irenexa-horizon
+    working_dir: /var/www
+    command: php artisan horizon
+    volumes:
+      - ./src:/var/www
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - irenexa
+
   nginx:
     image: nginx:1.27-alpine
     container_name: irenexa-nginx
