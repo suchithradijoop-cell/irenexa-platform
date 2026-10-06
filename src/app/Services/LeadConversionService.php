@@ -64,7 +64,7 @@ class LeadConversionService
         // misconfigured reaction must never be able to undo a successful
         // Lead conversion. We only announce the fact (Lesson 13.2); this
         // service no longer knows or cares who reacts to it.
-        LeadConverted::dispatch($deal);
+        LeadConverted::dispatch((int) $deal->tenant_id, (int) $deal->id);
 
         return $deal;
     }

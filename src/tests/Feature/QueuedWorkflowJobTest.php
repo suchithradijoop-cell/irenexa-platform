@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Jobs\ExecuteWorkflowActionJob;
+use App\Listeners\FireWorkflowRules;
 use App\Models\Contact;
 use App\Models\Lead;
 use App\Models\Tenant;
@@ -13,6 +14,7 @@ use App\Models\WorkflowRule;
 use App\MultiTenancy\TenantContext;
 use App\Services\WorkflowActionRegistry;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Events\CallQueuedListener;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Sanctum\Sanctum;
@@ -49,7 +51,16 @@ class QueuedWorkflowJobTest extends TestCase
             'deal_amount' => 1000,
         ])->assertCreated();
 
-        Queue::assertPushed(ExecuteWorkflowActionJob::class, 1);
+        // Since Lesson 13.3 there are two queue hops: the request only
+        // queues the FireWorkflowRules listener (Laravel wraps queued
+        // listeners in CallQueuedListener). The per-rule
+        // ExecuteWorkflowActionJob is dispatched later, by that listener,
+        // once a worker runs it — so it must NOT exist yet.
+        Queue::assertPushed(
+            CallQueuedListener::class,
+            fn (CallQueuedListener $job) => $job->class === FireWorkflowRules::class,
+        );
+        Queue::assertNotPushed(ExecuteWorkflowActionJob::class);
 
         // Proof the request did not wait for the automation.
         $this->assertDatabaseMissing('activities', ['content' => 'Queued follow-up']);

@@ -21,7 +21,13 @@ class AppServiceProvider extends ServiceProvider
     {
         // One TenantContext per request, shared by everything that asks
         // for it — not a fresh one built every time (see Lesson 5.2).
-        $this->app->singleton(TenantContext::class);
+        //
+        // scoped(), not singleton() (Lesson 13.3): a queue worker is one
+        // long-running process handling many jobs. A plain singleton would
+        // keep the previous job's tenant alive into the next job — a
+        // cross-tenant leak waiting to happen. Scoped instances are
+        // discarded after every request AND after every queued job.
+        $this->app->scoped(TenantContext::class);
     }
 
     /**

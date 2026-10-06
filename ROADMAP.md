@@ -33,7 +33,7 @@ must never appear in anything saved to the repository.
 **Phase 11 — Redis: ✅ COMPLETE**
 **Phase 12 — Queue: ✅ COMPLETE**
 **Phase 13 — Events**
-Status: In progress — on Lesson 13.2
+Status: In progress — on Lesson 13.3
 
 ---
 
@@ -227,8 +227,8 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | # | Lesson | Status |
 |---|--------|--------|
 | 13.1 | What Are Events and Listeners? (decoupling, the "announcement" model) | ✅ |
-| 13.2 | Building the First Event: LeadConverted + a Listener that fires the WorkflowEngine | 🔄 |
-| 13.3 | Queued Listeners and After-Commit Dispatching | ⬜ |
+| 13.2 | Building the First Event: LeadConverted + a Listener that fires the WorkflowEngine | ✅ |
+| 13.3 | Queued Listeners and After-Commit Dispatching | 🔄 |
 | 13.4 | Multiple Listeners on One Event (adding an audit trail without touching the service) | ⬜ |
 | 13.5 | Testing Events and Listeners (Event::fake) | ⬜ |
 | 13.6 | ADR 007 and Phase Recap | ⬜ |
