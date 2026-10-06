@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
+use Throwable;
 
 /**
  * Runs one WorkflowRule's action on a background worker instead of inside
@@ -33,6 +36,30 @@ use Illuminate\Queue\SerializesModels;
 class ExecuteWorkflowActionJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * Total attempts (the first run plus two retries) before the job is
+     * moved to the failed_jobs table for a human to look at.
+     */
+    public int $tries = 3;
+
+    /**
+     * Kill a single attempt that runs longer than this many seconds, so
+     * one stuck action can never block a worker indefinitely.
+     */
+    public int $timeout = 30;
+
+    /**
+     * Seconds to wait before each retry: 10s, then 1 minute. Waiting
+     * longer between attempts gives a temporarily broken dependency (a
+     * mail API, a locked row) time to recover instead of hammering it.
+     *
+     * @return array<int, int>
+     */
+    public function backoff(): array
+    {
+        return [10, 60];
+    }
 
     /**
      * $subjectType is the subject's Eloquent model class, e.g. App\Models\Deal.
@@ -65,11 +92,35 @@ class ExecuteWorkflowActionJob implements ShouldQueue
         // filter to $this->tenantId instead of failing closed.
         $subject = $this->subjectType::findOrFail($this->subjectId);
 
-        $action = $actions->resolve($this->actionKey);
+        try {
+            $action = $actions->resolve($this->actionKey);
+        } catch (InvalidArgumentException $e) {
+            // An unknown action key is a permanent misconfiguration —
+            // retrying will fail identically every time. Fail the job
+            // immediately instead of wasting the remaining attempts.
+            $this->fail($e);
+
+            return;
+        }
 
         $action->execute($this->actionConfig, [
             'subject' => $subject,
             ...$this->extraContext,
+        ]);
+    }
+
+    /**
+     * Runs once, after every attempt has been used up. The exception and
+     * payload are also saved automatically in failed_jobs; this log line
+     * adds the tenant, so an alert can say whose automation broke.
+     */
+    public function failed(Throwable $exception): void
+    {
+        Log::error('Workflow action job failed permanently.', [
+            'tenant_id' => $this->tenantId,
+            'action' => $this->actionKey,
+            'subject' => $this->subjectType.'#'.$this->subjectId,
+            'error' => $exception->getMessage(),
         ]);
     }
 }
