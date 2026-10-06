@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Notifications;
 
+use App\Models\User;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -13,8 +16,17 @@ use Illuminate\Notifications\Notification;
  * and a snapshot of "what the deal looked like then" is exactly what an
  * inbox entry should be.
  */
-class DealCreatedNotification extends Notification
+class DealCreatedNotification extends Notification implements ShouldQueue
 {
+    use Queueable;
+
+    /**
+     * Each recipient and channel becomes its own queued job, so one slow
+     * or failing mail delivery is retried alone — it never re-sends
+     * anyone else's notification.
+     */
+    public int $tries = 3;
+
     public function __construct(
         protected int $dealId,
         protected string $dealTitle,
@@ -22,13 +34,29 @@ class DealCreatedNotification extends Notification
     ) {}
 
     /**
-     * Channels this notification is delivered through.
+     * @return array<int, int>
+     */
+    public function backoff(): array
+    {
+        return [10, 60];
+    }
+
+    /**
+     * Channels this notification is delivered through, per recipient.
+     * The in-app inbox is always written; email respects the user's
+     * notify_by_email preference.
      *
      * @return array<int, string>
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        $channels = ['database'];
+
+        if ($notifiable instanceof User && $notifiable->notify_by_email) {
+            $channels[] = 'mail';
+        }
+
+        return $channels;
     }
 
     /**

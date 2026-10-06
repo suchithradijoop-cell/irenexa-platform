@@ -34,7 +34,7 @@ must never appear in anything saved to the repository.
 **Phase 12 — Queue: ✅ COMPLETE**
 **Phase 13 — Events: ✅ COMPLETE**
 **Phase 14 — Notifications**
-Status: In progress — on Lesson 14.3
+Status: In progress — on Lesson 14.4
 
 ---
 
@@ -243,7 +243,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 14.1 | What Are Notifications? Channels, and Where They Fit (events -> notifications) | ✅ |
 | 14.2 | Database Notifications: the in-app inbox (DealCreatedNotification) | ✅ |
 | 14.3 | Mail Notifications (and a local mail catcher in Docker) | ✅ |
-| 14.4 | Queued Notifications, Tenant Context, and Choosing Recipients | ⬜ |
+| 14.4 | Queued Notifications, Tenant Context, and Choosing Recipients | 🔄 |
 | 14.5 | Notifications API: list, unread count, mark as read | ⬜ |
 | 14.6 | Testing Notifications (Notification::fake) and ADR 008 | ⬜ |
 
