@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Models\Tenant;
 use App\MultiTenancy\TenantContext;
 use App\Services\WorkflowActionRegistry;
 use Illuminate\Bus\Queueable;
@@ -85,8 +84,7 @@ class ExecuteWorkflowActionJob implements ShouldQueue
         // middleware — there was no HTTP request at all. We establish the
         // tenant ourselves, explicitly, before touching anything
         // tenant-scoped.
-        $tenant = Tenant::findOrFail($this->tenantId);
-        $tenantContext->set($tenant);
+        $tenantContext->setById($this->tenantId);
 
         // Step 2: only safe to do this now — TenantScope will correctly
         // filter to $this->tenantId instead of failing closed.

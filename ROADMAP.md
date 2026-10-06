@@ -32,8 +32,9 @@ must never appear in anything saved to the repository.
 **Phase 10 — API: ✅ COMPLETE**
 **Phase 11 — Redis: ✅ COMPLETE**
 **Phase 12 — Queue: ✅ COMPLETE**
-**Phase 13 — Events**
-Status: In progress — on Lesson 13.4
+**Phase 13 — Events: ✅ COMPLETE**
+**Phase 14 — Notifications**
+Status: Not started — lessons not yet broken down
 
 ---
 
@@ -222,16 +223,18 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 
 **Phase 12 complete.**
 
-## Phase 13 — Events 🔄
+## Phase 13 — Events ✅
 
 | # | Lesson | Status |
 |---|--------|--------|
 | 13.1 | What Are Events and Listeners? (decoupling, the "announcement" model) | ✅ |
 | 13.2 | Building the First Event: LeadConverted + a Listener that fires the WorkflowEngine | ✅ |
 | 13.3 | Queued Listeners and After-Commit Dispatching | ✅ |
-| 13.4 | Multiple Listeners on One Event (adding an audit trail without touching the service) | 🔄 |
-| 13.5 | Testing Events and Listeners (Event::fake) | ⬜ |
-| 13.6 | ADR 007 and Phase Recap | ⬜ |
+| 13.4 | Multiple Listeners on One Event (adding an audit trail without touching the service) | ✅ |
+| 13.5 | Testing Events and Listeners (Event::fake) | ✅ |
+| 13.6 | ADR 007 and Phase Recap | ✅ |
+
+**Phase 13 complete.**
 
 ## Phase 14 — Notifications ⬜
 ## Phase 15 — MongoDB ⬜
@@ -278,3 +281,4 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 2026-08-13 | **Root cause fixed + a second bug found** | The fail-closed TenantScope fix immediately exposed the real root cause: legitimate, same-tenant requests to `/leads/{lead}/convert` and `/contacts/{contact}/activities` started failing with 404 too — proving `ResolveTenant` genuinely runs AFTER route model binding for ALL requests, not just the malicious case. Fixed properly with `$middleware->priority([Authenticate::class, ResolveTenant::class, SubstituteBindings::class])` in `bootstrap/app.php`, forcing auth → tenant resolution → route-model-binding, in that order, always. Separately found the `ModelNotFoundException` render() handler (Lesson 10.4) was silently never matching — Laravel's `Handler::prepareException()` converts `ModelNotFoundException` to `NotFoundHttpException` (reusing its leaky message) BEFORE custom render callbacks are checked, so the type-hint had to change to `NotFoundHttpException`. Both bugs were caught entirely by automated tests, not manual inspection — the exact payoff Lesson 7.6 and 10.6 argued for. |
 | 2026-09-25 | **Phase 11 complete — Redis** | 11.1–11.2: verified Redis connectivity via Tinker, then found `CACHE_STORE` was still `database` (Laravel's default) — fixed in `.env` and the stale `.env.example` (also fixed `REDIS_HOST` there, still `127.0.0.1` from the unedited skeleton). 11.3: built `CachedContactRepository` — a Decorator around `EloquentContactRepository` implementing the same `ContactRepositoryInterface`, caching only `paginate()` with tenant-scoped keys, bound in `RepositoryServiceProvider` in place of the plain Eloquent repository (ADR 006). 11.4: replaced plain keys with Redis cache tags (`tenant:{id}:contacts`) so `create()` can invalidate every cached page for that tenant in one `flush()` call, without needing to enumerate every page/per_page combination. 11.5: added Redis-backed rate limiting — `RateLimiter::for('login', ...)` (5/min by IP, brute-force protection on `/register` and `/login`) and `RateLimiter::for('api', ...)` (60/min by authenticated user ID) in `AppServiceProvider`, applied via `throttle:login` / `throttle:api` middleware in `routes/api.php`. 11.6: added `CachingTest` (cache hit serves stale-safe data, create() busts the cache, per-tenant cache isolation) and `RateLimitingTest` (login limiter trips at 6 attempts/min, API limiter trips at 61 requests/min). Also fixed a real infrastructure issue along the way: PHPStan crashed hitting PHP's default 128M memory limit inside the `app` container — added `docker/php/php.ini` (`memory_limit = 512M`) copied into the image in `docker/php/Dockerfile`. |
 | 2026-10-10 | **Phase 12 complete — Queue** | 12.1–12.2: queue concepts, jobs table, drivers. 12.3: `ExecuteWorkflowActionJob` — WorkflowEngine now dispatches one job per matching rule; the job takes the subject's class + ID (not a model) and sets `TenantContext` itself before loading it, because `SerializesModels` would otherwise re-fetch the model before `handle()` runs, through a fail-closed `TenantScope` with no tenant. 12.4: switched `QUEUE_CONNECTION` to redis, added a `horizon` docker service, gated `/horizon` to Admins. **Found a real Phase 11 gap:** the PHP image had no phpredis extension and a stale cached config kept the app on the `database` cache store — Redis caching was never live; tests hid it by using the `array` driver. Fixed via Dockerfile (`redis`, `pcntl`) + `config:clear`; also patched 4 `composer audit` advisories. 12.5: `$tries`, `$timeout`, `backoff()`, immediate `fail()` for permanent errors, `failed()` log with tenant. 12.6: `QueuedWorkflowJobTest` (dispatch vs inline, worker sets own tenant, cross-tenant subject blocked, permanent failure). |
+| 2026-10-14 | **Phase 13 complete — Events** | 13.1–13.2: `LeadConverted` event + `FireWorkflowRules` listener replace the direct WorkflowEngine call in `LeadConversionService` (its constructor shrank; existing tests passed untouched). 13.3: listener queued + after-commit; event carries `tenantId`/`dealId` instead of the model (same restore-before-handle trap as Lesson 12.3); `TenantContext` changed from `singleton` to `scoped` so a long-lived Horizon worker cannot leak one job's tenant into the next. A test broke as expected (Queue::fake now captures the queued listener first) and was updated to assert the two-hop structure. 13.4: `audit_logs` (append-only, tenant-scoped) + `WriteAuditLog` as a second listener — no existing file touched. 13.5: `LeadConvertedEventTest` (dispatch payload, listener registration, audit record, tenant isolation); noted the bare `Event::fake()` gotcha with model events. 13.6: extracted `TenantContext::setById()` (removed three duplicate blocks) and wrote ADR 007. |

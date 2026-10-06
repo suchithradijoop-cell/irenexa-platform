@@ -6,7 +6,6 @@ namespace App\Listeners;
 
 use App\Events\LeadConverted;
 use App\Models\Deal;
-use App\Models\Tenant;
 use App\MultiTenancy\TenantContext;
 use App\Services\WorkflowEngine;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
@@ -48,7 +47,7 @@ class FireWorkflowRules implements ShouldHandleEventsAfterCommit, ShouldQueue
     {
         // A queue worker has no ResolveTenant middleware: establish the
         // tenant first, then load the Deal through TenantScope.
-        $this->tenantContext->set(Tenant::findOrFail($event->tenantId));
+        $this->tenantContext->setById($event->tenantId);
 
         $deal = Deal::findOrFail($event->dealId);
 

@@ -7,7 +7,6 @@ namespace App\Listeners;
 use App\Events\LeadConverted;
 use App\Models\AuditLog;
 use App\Models\Deal;
-use App\Models\Tenant;
 use App\MultiTenancy\TenantContext;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,7 +37,7 @@ class WriteAuditLog implements ShouldHandleEventsAfterCommit, ShouldQueue
 
     public function handle(LeadConverted $event): void
     {
-        $this->tenantContext->set(Tenant::findOrFail($event->tenantId));
+        $this->tenantContext->setById($event->tenantId);
 
         $deal = Deal::findOrFail($event->dealId);
 
