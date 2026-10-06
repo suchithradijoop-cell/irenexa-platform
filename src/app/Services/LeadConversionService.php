@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Enums\DealStage;
 use App\Enums\LeadStatus;
+use App\Events\LeadConverted;
 use App\Models\Deal;
 use App\Models\Lead;
 use App\Repositories\Contracts\CompanyRepositoryInterface;
@@ -21,7 +22,6 @@ class LeadConversionService
         protected ContactRepositoryInterface $contacts,
         protected CompanyRepositoryInterface $companies,
         protected DealRepositoryInterface $deals,
-        protected WorkflowEngine $workflowEngine,
     ) {}
 
     public function convert(Lead $lead, string $companyName, string $dealTitle, float $dealAmount): Deal
@@ -61,13 +61,10 @@ class LeadConversionService
 
         // Deliberately AFTER the transaction, not inside it. The Deal is
         // already safely committed by this point — a broken or
-        // misconfigured automation rule must never be able to undo a
-        // successful Lead conversion. Automation is layered on top of
-        // the core business transaction, not a dependency of it.
-        $this->workflowEngine->fire('lead.converted', [
-            'subject' => $deal,
-            'deal_amount' => (float) $deal->amount,
-        ]);
+        // misconfigured reaction must never be able to undo a successful
+        // Lead conversion. We only announce the fact (Lesson 13.2); this
+        // service no longer knows or cares who reacts to it.
+        LeadConverted::dispatch($deal);
 
         return $deal;
     }
