@@ -31,8 +31,9 @@ must never appear in anything saved to the repository.
 **Phase 9 — Workflow Engine: ✅ COMPLETE**
 **Phase 10 — API: ✅ COMPLETE**
 **Phase 11 — Redis: ✅ COMPLETE**
-**Phase 12 — Queue**
-Status: In progress — on Lesson 12.5
+**Phase 12 — Queue: ✅ COMPLETE**
+**Phase 13 — Events**
+Status: Not started — lessons not yet broken down
 
 ---
 
@@ -208,7 +209,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 
 **Phase 11 complete.**
 
-## Phase 12 — Queue 🔄
+## Phase 12 — Queue ✅
 
 | # | Lesson | Status |
 |---|--------|--------|
@@ -216,8 +217,10 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 12.2 | Laravel's Queue Internals: Jobs, Drivers, and the QUEUE_CONNECTION | ✅ |
 | 12.3 | Building a Real Queued Job (moving WorkflowEngine execution off the request) | ✅ |
 | 12.4 | Running Workers & Laravel Horizon (Redis-backed queue dashboard) | ✅ |
-| 12.5 | Failed Jobs, Retries, and Backoff Strategy | 🔄 |
-| 12.6 | Testing Queued Jobs | ⬜ |
+| 12.5 | Failed Jobs, Retries, and Backoff Strategy | ✅ |
+| 12.6 | Testing Queued Jobs | ✅ |
+
+**Phase 12 complete.**
 
 ## Phase 13 — Events ⬜
 ## Phase 14 — Notifications ⬜
@@ -264,3 +267,4 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 2026-08-13 | **Critical bug found & fixed (Lesson 10.6 test)** | `ApiContractTest::test_accessing_another_tenants_lead_returns_generic_not_found` caught a REAL cross-tenant data leak: `{lead}` route-model-binding resolves before `ResolveTenant` middleware sets `TenantContext` (middleware ordering not guaranteed for custom aliases vs. Laravel's internal `SubstituteBindings`), so `TenantScope::apply()` saw a null tenant and — because the old code only added a `WHERE tenant_id = ?` filter `if ($tenantId)` — silently added NO filter at all, exposing every tenant's rows during that window. Fixed by making `TenantScope` fail CLOSED instead of fail OPEN: `$builder->where('tenant_id', $tenantId ?? -1)` always filters, returning zero rows (not all rows) when the tenant isn't yet known. This is defense-in-depth's payoff — a scope written to be "safe by default" turned a middleware-ordering quirk into a harmless 404 instead of a real data leak. |
 | 2026-08-13 | **Root cause fixed + a second bug found** | The fail-closed TenantScope fix immediately exposed the real root cause: legitimate, same-tenant requests to `/leads/{lead}/convert` and `/contacts/{contact}/activities` started failing with 404 too — proving `ResolveTenant` genuinely runs AFTER route model binding for ALL requests, not just the malicious case. Fixed properly with `$middleware->priority([Authenticate::class, ResolveTenant::class, SubstituteBindings::class])` in `bootstrap/app.php`, forcing auth → tenant resolution → route-model-binding, in that order, always. Separately found the `ModelNotFoundException` render() handler (Lesson 10.4) was silently never matching — Laravel's `Handler::prepareException()` converts `ModelNotFoundException` to `NotFoundHttpException` (reusing its leaky message) BEFORE custom render callbacks are checked, so the type-hint had to change to `NotFoundHttpException`. Both bugs were caught entirely by automated tests, not manual inspection — the exact payoff Lesson 7.6 and 10.6 argued for. |
 | 2026-09-25 | **Phase 11 complete — Redis** | 11.1–11.2: verified Redis connectivity via Tinker, then found `CACHE_STORE` was still `database` (Laravel's default) — fixed in `.env` and the stale `.env.example` (also fixed `REDIS_HOST` there, still `127.0.0.1` from the unedited skeleton). 11.3: built `CachedContactRepository` — a Decorator around `EloquentContactRepository` implementing the same `ContactRepositoryInterface`, caching only `paginate()` with tenant-scoped keys, bound in `RepositoryServiceProvider` in place of the plain Eloquent repository (ADR 006). 11.4: replaced plain keys with Redis cache tags (`tenant:{id}:contacts`) so `create()` can invalidate every cached page for that tenant in one `flush()` call, without needing to enumerate every page/per_page combination. 11.5: added Redis-backed rate limiting — `RateLimiter::for('login', ...)` (5/min by IP, brute-force protection on `/register` and `/login`) and `RateLimiter::for('api', ...)` (60/min by authenticated user ID) in `AppServiceProvider`, applied via `throttle:login` / `throttle:api` middleware in `routes/api.php`. 11.6: added `CachingTest` (cache hit serves stale-safe data, create() busts the cache, per-tenant cache isolation) and `RateLimitingTest` (login limiter trips at 6 attempts/min, API limiter trips at 61 requests/min). Also fixed a real infrastructure issue along the way: PHPStan crashed hitting PHP's default 128M memory limit inside the `app` container — added `docker/php/php.ini` (`memory_limit = 512M`) copied into the image in `docker/php/Dockerfile`. |
+| 2026-10-10 | **Phase 12 complete — Queue** | 12.1–12.2: queue concepts, jobs table, drivers. 12.3: `ExecuteWorkflowActionJob` — WorkflowEngine now dispatches one job per matching rule; the job takes the subject's class + ID (not a model) and sets `TenantContext` itself before loading it, because `SerializesModels` would otherwise re-fetch the model before `handle()` runs, through a fail-closed `TenantScope` with no tenant. 12.4: switched `QUEUE_CONNECTION` to redis, added a `horizon` docker service, gated `/horizon` to Admins. **Found a real Phase 11 gap:** the PHP image had no phpredis extension and a stale cached config kept the app on the `database` cache store — Redis caching was never live; tests hid it by using the `array` driver. Fixed via Dockerfile (`redis`, `pcntl`) + `config:clear`; also patched 4 `composer audit` advisories. 12.5: `$tries`, `$timeout`, `backoff()`, immediate `fail()` for permanent errors, `failed()` log with tenant. 12.6: `QueuedWorkflowJobTest` (dispatch vs inline, worker sets own tenant, cross-tenant subject blocked, permanent failure). |
