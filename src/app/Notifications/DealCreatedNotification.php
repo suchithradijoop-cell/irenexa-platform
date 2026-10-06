@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Notifications;
 
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 /**
@@ -27,7 +28,22 @@ class DealCreatedNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'mail'];
+    }
+
+    /**
+     * Content of the email (the "mail" channel). Laravel renders it with
+     * a built-in responsive template; the recipient address comes from
+     * the notifiable's email attribute automatically.
+     */
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject('New deal created: '.$this->dealTitle)
+            ->greeting('Hello,')
+            ->line('A new deal was created in your IRENEXA workspace.')
+            ->line('Deal: '.$this->dealTitle)
+            ->line('Amount: '.number_format($this->dealAmount, 2));
     }
 
     /**

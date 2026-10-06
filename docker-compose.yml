@@ -75,6 +75,18 @@ services:
     networks:
       - irenexa
 
+  # Local "mail catcher" (Lesson 14.3): accepts SMTP on 1025 and shows
+  # every email in a web inbox at http://localhost:8025. Nothing is ever
+  # delivered to a real address, so development can't email real people.
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: irenexa-mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+    networks:
+      - irenexa
+
   adminer:
     image: adminer:latest
     container_name: irenexa-adminer
