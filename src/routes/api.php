@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\DealController;
 use App\Http\Controllers\Api\LeadController;
+use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('throttle:login')->group(function () {
@@ -34,4 +35,11 @@ Route::middleware(['auth:sanctum', 'tenant', 'throttle:api'])->group(function ()
     Route::post('/contacts/{contact}/activities', [ActivityController::class, 'storeForContact']);
     Route::post('/companies/{company}/activities', [ActivityController::class, 'storeForCompany']);
     Route::post('/deals/{deal}/activities', [ActivityController::class, 'storeForDeal']);
+
+    // The caller's own in-app inbox (Lesson 14.5). No {user} in any URL:
+    // whose inbox it is always comes from the authenticated token.
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 });
