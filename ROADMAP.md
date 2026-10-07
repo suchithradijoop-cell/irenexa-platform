@@ -33,8 +33,9 @@ must never appear in anything saved to the repository.
 **Phase 11 — Redis: ✅ COMPLETE**
 **Phase 12 — Queue: ✅ COMPLETE**
 **Phase 13 — Events: ✅ COMPLETE**
-**Phase 14 — Notifications**
-Status: In progress — on Lesson 14.5
+**Phase 14 — Notifications: ✅ COMPLETE**
+**Phase 15 — MongoDB**
+Status: Not started — lessons not yet broken down
 
 ---
 
@@ -236,7 +237,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 
 **Phase 13 complete.**
 
-## Phase 14 — Notifications 🔄
+## Phase 14 — Notifications ✅
 
 | # | Lesson | Status |
 |---|--------|--------|
@@ -244,8 +245,10 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 14.2 | Database Notifications: the in-app inbox (DealCreatedNotification) | ✅ |
 | 14.3 | Mail Notifications (and a local mail catcher in Docker) | ✅ |
 | 14.4 | Queued Notifications, Tenant Context, and Choosing Recipients | ✅ |
-| 14.5 | Notifications API: list, unread count, mark as read | 🔄 |
-| 14.6 | Testing Notifications (Notification::fake) and ADR 008 | ⬜ |
+| 14.5 | Notifications API: list, unread count, mark as read | ✅ |
+| 14.6 | Testing Notifications (Notification::fake) and ADR 008 | ✅ |
+
+**Phase 14 complete.**
 
 ## Phase 15 — MongoDB ⬜
 ## Phase 16 — Search ⬜
@@ -292,3 +295,4 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 2026-09-25 | **Phase 11 complete — Redis** | 11.1–11.2: verified Redis connectivity via Tinker, then found `CACHE_STORE` was still `database` (Laravel's default) — fixed in `.env` and the stale `.env.example` (also fixed `REDIS_HOST` there, still `127.0.0.1` from the unedited skeleton). 11.3: built `CachedContactRepository` — a Decorator around `EloquentContactRepository` implementing the same `ContactRepositoryInterface`, caching only `paginate()` with tenant-scoped keys, bound in `RepositoryServiceProvider` in place of the plain Eloquent repository (ADR 006). 11.4: replaced plain keys with Redis cache tags (`tenant:{id}:contacts`) so `create()` can invalidate every cached page for that tenant in one `flush()` call, without needing to enumerate every page/per_page combination. 11.5: added Redis-backed rate limiting — `RateLimiter::for('login', ...)` (5/min by IP, brute-force protection on `/register` and `/login`) and `RateLimiter::for('api', ...)` (60/min by authenticated user ID) in `AppServiceProvider`, applied via `throttle:login` / `throttle:api` middleware in `routes/api.php`. 11.6: added `CachingTest` (cache hit serves stale-safe data, create() busts the cache, per-tenant cache isolation) and `RateLimitingTest` (login limiter trips at 6 attempts/min, API limiter trips at 61 requests/min). Also fixed a real infrastructure issue along the way: PHPStan crashed hitting PHP's default 128M memory limit inside the `app` container — added `docker/php/php.ini` (`memory_limit = 512M`) copied into the image in `docker/php/Dockerfile`. |
 | 2026-10-10 | **Phase 12 complete — Queue** | 12.1–12.2: queue concepts, jobs table, drivers. 12.3: `ExecuteWorkflowActionJob` — WorkflowEngine now dispatches one job per matching rule; the job takes the subject's class + ID (not a model) and sets `TenantContext` itself before loading it, because `SerializesModels` would otherwise re-fetch the model before `handle()` runs, through a fail-closed `TenantScope` with no tenant. 12.4: switched `QUEUE_CONNECTION` to redis, added a `horizon` docker service, gated `/horizon` to Admins. **Found a real Phase 11 gap:** the PHP image had no phpredis extension and a stale cached config kept the app on the `database` cache store — Redis caching was never live; tests hid it by using the `array` driver. Fixed via Dockerfile (`redis`, `pcntl`) + `config:clear`; also patched 4 `composer audit` advisories. 12.5: `$tries`, `$timeout`, `backoff()`, immediate `fail()` for permanent errors, `failed()` log with tenant. 12.6: `QueuedWorkflowJobTest` (dispatch vs inline, worker sets own tenant, cross-tenant subject blocked, permanent failure). |
 | 2026-10-14 | **Phase 13 complete — Events** | 13.1–13.2: `LeadConverted` event + `FireWorkflowRules` listener replace the direct WorkflowEngine call in `LeadConversionService` (its constructor shrank; existing tests passed untouched). 13.3: listener queued + after-commit; event carries `tenantId`/`dealId` instead of the model (same restore-before-handle trap as Lesson 12.3); `TenantContext` changed from `singleton` to `scoped` so a long-lived Horizon worker cannot leak one job's tenant into the next. A test broke as expected (Queue::fake now captures the queued listener first) and was updated to assert the two-hop structure. 13.4: `audit_logs` (append-only, tenant-scoped) + `WriteAuditLog` as a second listener — no existing file touched. 13.5: `LeadConvertedEventTest` (dispatch payload, listener registration, audit record, tenant isolation); noted the bare `Event::fake()` gotcha with model events. 13.6: extracted `TenantContext::setById()` (removed three duplicate blocks) and wrote ADR 007. |
+| 2026-10-22 | **Phase 14 complete — Notifications** | 14.1: events vs notifications, channels. 14.2: `notifications` table, `DealCreatedNotification`, `NotifyAdminsOfDealCreated` as the third `LeadConverted` listener, with an explicit tenant filter because `User` has no global scope. 14.3: mail channel + Mailpit service; first full live run (curl -> Redis queue -> Horizon -> email) proved the whole Phase 8-14 chain; debugging detour showed the demo database had no deals yet, and an earlier tinker/terminal prompt mix-up. Added `DemoSeeder`. 14.4: notification queued per recipient (a retry no longer duplicates mail), per-user `notify_by_email` preference decided in `via()`. 14.5: inbox API (list, unread count, mark read, read all) — owner always from the token, every repository method requires the user, foreign id -> 404; the contract test caught a Laravel quirk — a resource with its own top-level `data` key is not wrapped in the `{"data": ...}` envelope, so the payload field is exposed as `content`. 14.6: `NotificationsTest` (admins only, same tenant only, email opt-out keeps inbox, inbox API, cross-user isolation) and ADR 008. |
