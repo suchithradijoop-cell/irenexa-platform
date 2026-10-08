@@ -67,6 +67,22 @@ services:
     networks:
       - irenexa
 
+  # Document database for the append-only event/audit stream (Phase 15).
+  # Local development credentials only, same spirit as the MySQL service.
+  mongodb:
+    image: mongo:7
+    container_name: irenexa-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: irenexa
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - irenexa
+
   redis:
     image: redis:7-alpine
     container_name: irenexa-redis
@@ -100,6 +116,7 @@ services:
 
 volumes:
   mysql_data:
+  mongo_data:
 
 networks:
   irenexa:

@@ -1,0 +1,131 @@
+--progress is a global compose flag, better use `docker compose --progress xx build ...
+ Image irenexa-platform-app Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 550B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.88kB 0.0s done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/composer:2
+#3 ...
+
+#4 [internal] load metadata for docker.io/library/php:8.3-fpm
+#4 DONE 1.1s
+
+#3 [internal] load metadata for docker.io/library/composer:2
+#3 DONE 1.1s
+
+#5 [internal] load metadata for ghcr.io/mlocati/php-extension-installer:latest
+#5 DONE 1.1s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [stage-0 1/8] FROM docker.io/library/php:8.3-fpm@sha256:97e9367af2c37708155f4f9f23bbf13283c6b8e375a1ab175dde3dff2e24038e
+#7 resolve docker.io/library/php:8.3-fpm@sha256:97e9367af2c37708155f4f9f23bbf13283c6b8e375a1ab175dde3dff2e24038e 0.0s done
+#7 DONE 0.0s
+
+#8 FROM ghcr.io/mlocati/php-extension-installer:latest@sha256:1afade3e29cfc97362cf5885e5ac333bf2faab1146cb28ebbb59b17e68f87e88
+#8 resolve ghcr.io/mlocati/php-extension-installer:latest@sha256:1afade3e29cfc97362cf5885e5ac333bf2faab1146cb28ebbb59b17e68f87e88 0.0s done
+#8 DONE 0.0s
+
+#9 [stage-0 2/8] RUN apt-get update && apt-get install -y     git     curl     unzip     zip     libzip-dev     libpng-dev     libjpeg62-turbo-dev     libfreetype6-dev     libicu-dev     libonig-dev     libxml2-dev     libssl-dev     libsqlite3-dev     sqlite3     && docker-php-ext-configure gd --with-freetype --with-jpeg     && docker-php-ext-install         pdo         pdo_mysql         pdo_sqlite         mbstring         bcmath         exif         gd         intl         zip         opcache         pcntl     && pecl install redis     && docker-php-ext-enable redis
+#9 CACHED
+
+#10 [stage-0 3/8] COPY --from=ghcr.io/mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
+#10 CACHED
+
+#11 FROM docker.io/library/composer:2@sha256:af98f42dfff7c68ba8d53c2164fd9fde1087b7d449514baa38c418b1f6bc4bac
+#11 resolve docker.io/library/composer:2@sha256:af98f42dfff7c68ba8d53c2164fd9fde1087b7d449514baa38c418b1f6bc4bac 0.0s done
+#11 CACHED
+
+#12 [internal] load build context
+#12 transferring context: 96B done
+#12 DONE 0.0s
+
+#13 [stage-0 4/8] RUN install-php-extensions mongodb     && php -m | grep -q mongodb
+#13 0.852 install-php-extensions v.2.12.0
+#13 0.852 #StandWithUkraine
+#13 4.058 Updating channel "pecl.php.net"
+#13 4.329 Channel "pecl.php.net" is up to date
+#13 4.525 Hit:1 http://deb.debian.org/debian trixie InRelease
+#13 4.525 Hit:2 http://deb.debian.org/debian trixie-updates InRelease
+#13 4.556 Hit:3 http://deb.debian.org/debian-security trixie-security InRelease
+#13 4.582 Reading package lists...
+#13 7.965 ### MARKING PRE-INSTALLED PACKAGES AS IN-USE ###
+#13 8.595 libssl3t64 was already set to manually installed.
+#13 8.595 libzstd1 was already set to manually installed.
+#13 8.595 libicu76 set to manually installed.
+#13 8.595 ### INSTALLING REQUIRED PACKAGES ###
+#13 8.595 # Packages to be kept after installation: libsnappy1v5
+#13 8.595 # Packages to be used only for installation: libsasl2-dev libsnappy-dev libzstd-dev
+#13 10.92 Selecting previously unselected package libsasl2-dev.
+#13 10.92 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 17230 files and directories currently installed.)
+#13 10.95 Preparing to unpack .../libsasl2-dev_2.1.28+dfsg1-9_amd64.deb ...
+#13 10.95 Unpacking libsasl2-dev (2.1.28+dfsg1-9) ...
+#13 11.01 Selecting previously unselected package libsnappy1v5:amd64.
+#13 11.01 Preparing to unpack .../libsnappy1v5_1.2.2-1_amd64.deb ...
+#13 11.02 Unpacking libsnappy1v5:amd64 (1.2.2-1) ...
+#13 11.05 Selecting previously unselected package libsnappy-dev:amd64.
+#13 11.05 Preparing to unpack .../libsnappy-dev_1.2.2-1_amd64.deb ...
+#13 11.05 Unpacking libsnappy-dev:amd64 (1.2.2-1) ...
+#13 11.08 Selecting previously unselected package libzstd-dev:amd64.
+#13 11.08 Preparing to unpack .../libzstd-dev_1.5.7+dfsg-1_amd64.deb ...
+#13 11.09 Unpacking libzstd-dev:amd64 (1.5.7+dfsg-1) ...
+#13 11.14 Setting up libzstd-dev:amd64 (1.5.7+dfsg-1) ...
+#13 11.16 Setting up libsnappy1v5:amd64 (1.2.2-1) ...
+#13 11.17 Setting up libsasl2-dev (2.1.28+dfsg1-9) ...
+#13 11.18 Setting up libsnappy-dev:amd64 (1.2.2-1) ...
+#13 11.19 Processing triggers for libc-bin (2.41-12+deb13u4) ...
+#13 11.26 ### INSTALLING REMOTE MODULE mongodb ###
+#13 11.68 
+#13 11.68 Fatal error: Uncaught TypeError: fread(): Argument #2 ($length) must be of type int, float given in /usr/local/lib/php/PEAR/REST.php:457
+#13 11.68 Stack trace:
+#13 11.68 #0 /usr/local/lib/php/PEAR/REST.php(457): fread(Resource id #84, 6.6168381824307E+40)
+#13 11.68 #1 /usr/local/lib/php/PEAR/REST.php(87): PEAR_REST->downloadHttp('https://pecl.ph...', false, false, 'pecl.php.net')
+#13 11.68 #2 /usr/local/lib/php/PEAR/REST.php(66): PEAR_REST->retrieveData('https://pecl.ph...', false, false, 'pecl.php.net')
+#13 11.68 #3 /usr/local/lib/php/PEAR/REST/10.php(273): PEAR_REST->retrieveCacheFirst('https://pecl.ph...', false, false, 'pecl.php.net')
+#13 11.68 #4 /usr/local/lib/php/PEAR/REST/10.php(120): PEAR_REST_10->_returnDownloadURL('https://pecl.ph...', 'mongodb', Array, Array, true, false, 'pecl.php.net')
+#13 11.68 #5 /usr/local/lib/php/PEAR/Downloader.php(871): PEAR_REST_10->getDownloadURL('https://pecl.ph...', Array, 'stable', false, 'pecl.php.net')
+#13 11.68 #6 /usr/local/lib/php/PEAR/Downloader/Package.php(1706): PEAR_Downloader->_getPackageDownloadUrl(Array)
+#13 11.68 #7 /usr/local/lib/php/PEAR/Downloader/Package.php(189): PEAR_Downloader_Package->_fromString('channel://pecl....')
+#13 11.68 #8 /usr/local/lib/php/PEAR/Downloader.php(297): PEAR_Downloader_Package->initialize('channel://pecl....')
+#13 11.68 #9 /usr/local/lib/php/PEAR/Command/Install.php(671): PEAR_Downloader->download(Array)
+#13 11.68 #10 /usr/local/lib/php/PEAR/Command/Common.php(270): PEAR_Command_Install->doInstall('install', Array, Array)
+#13 11.68 #11 /usr/local/lib/php/pearcmd.php(310): PEAR_Command_Common->run('install', Array, Array)
+#13 11.68 #12 /usr/local/lib/php/peclcmd.php(32): require_once('/usr/local/lib/...')
+#13 11.68 #13 {main}
+#13 11.68   thrown in /usr/local/lib/php/PEAR/REST.php on line 457
+#13 ERROR: process "/bin/sh -c install-php-extensions mongodb     && php -m | grep -q mongodb" did not complete successfully: exit code: 255
+------
+ > [stage-0 4/8] RUN install-php-extensions mongodb     && php -m | grep -q mongodb:
+11.68 #5 /usr/local/lib/php/PEAR/Downloader.php(871): PEAR_REST_10->getDownloadURL('https://pecl.ph...', Array, 'stable', false, 'pecl.php.net')
+11.68 #6 /usr/local/lib/php/PEAR/Downloader/Package.php(1706): PEAR_Downloader->_getPackageDownloadUrl(Array)
+11.68 #7 /usr/local/lib/php/PEAR/Downloader/Package.php(189): PEAR_Downloader_Package->_fromString('channel://pecl....')
+11.68 #8 /usr/local/lib/php/PEAR/Downloader.php(297): PEAR_Downloader_Package->initialize('channel://pecl....')
+11.68 #9 /usr/local/lib/php/PEAR/Command/Install.php(671): PEAR_Downloader->download(Array)
+11.68 #10 /usr/local/lib/php/PEAR/Command/Common.php(270): PEAR_Command_Install->doInstall('install', Array, Array)
+11.68 #11 /usr/local/lib/php/pearcmd.php(310): PEAR_Command_Common->run('install', Array, Array)
+11.68 #12 /usr/local/lib/php/peclcmd.php(32): require_once('/usr/local/lib/...')
+11.68 #13 {main}
+11.68   thrown in /usr/local/lib/php/PEAR/REST.php on line 457
+------
+Dockerfile:43
+
+--------------------
+
+  42 |     COPY --from=ghcr.io/mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
+
+  43 | >>> RUN install-php-extensions mongodb \
+
+  44 | >>>     && php -m | grep -q mongodb
+
+  45 |     
+
+--------------------
+
+failed to solve: process "/bin/sh -c install-php-extensions mongodb     && php -m | grep -q mongodb" did not complete successfully: exit code: 255
+

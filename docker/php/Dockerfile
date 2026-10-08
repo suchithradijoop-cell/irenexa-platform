@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libonig-dev \
     libxml2-dev \
+    libssl-dev \
     libsqlite3-dev \
     sqlite3 \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -29,6 +30,22 @@ RUN apt-get update && apt-get install -y \
         pcntl \
     && pecl install redis \
     && docker-php-ext-enable redis
+
+# Separate layer on purpose: a failure here is easy to read in the build
+# output, and the slow layer above stays cached.
+#
+# Why not a plain `pecl install mongodb` (or install-php-extensions, which
+# calls pecl)? PEAR's own downloader crashes on PHP 8.3 for larger
+# packages: "fread(): Argument #2 ($length) must be of type int, float
+# given" in PEAR/REST.php. We bypass that downloader: fetch the tarball
+# with curl, pin an explicit version, and install from the local file.
+# The final `php -m | grep` fails the build immediately if the extension
+# did not actually load — it can never be silently missing at runtime.
+RUN curl -fsSL -o /tmp/mongodb.tgz https://pecl.php.net/get/mongodb-2.5.3.tgz \
+    && yes '' | pecl install /tmp/mongodb.tgz \
+    && docker-php-ext-enable mongodb \
+    && rm /tmp/mongodb.tgz \
+    && php -m | grep -q mongodb
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/99-irenexa.ini
