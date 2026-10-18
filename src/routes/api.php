@@ -25,6 +25,7 @@ Route::middleware(['auth:sanctum', 'tenant', 'throttle:api'])->group(function ()
     Route::post('/leads/{lead}/convert', [LeadController::class, 'convert']);
 
     Route::get('/contacts', [ContactController::class, 'index']);
+    Route::get('/contacts/search', [ContactController::class, 'search']);
     Route::post('/contacts', [ContactController::class, 'store']);
 
     Route::get('/companies', [CompanyController::class, 'index']);

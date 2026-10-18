@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchContactsRequest;
 use App\Http\Requests\StoreContactRequest;
 use App\Http\Resources\ContactResource;
 use App\Services\ContactService;
@@ -22,6 +23,16 @@ class ContactController extends Controller
     {
         return ContactResource::collection(
             $this->contactService->listPaginated($request->integer('per_page', 15)),
+        );
+    }
+
+    public function search(SearchContactsRequest $request): AnonymousResourceCollection
+    {
+        return ContactResource::collection(
+            $this->contactService->search(
+                (string) $request->validated('q'),
+                (int) $request->validated('per_page', 15),
+            ),
         );
     }
 
