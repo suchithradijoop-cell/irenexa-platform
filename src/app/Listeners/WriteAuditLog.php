@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Events\LeadConverted;
-use App\Models\AuditLog;
 use App\Models\Deal;
 use App\MultiTenancy\TenantContext;
+use App\Repositories\Contracts\AuditLogRepositoryInterface;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -25,6 +25,7 @@ class WriteAuditLog implements ShouldHandleEventsAfterCommit, ShouldQueue
 
     public function __construct(
         protected TenantContext $tenantContext,
+        protected AuditLogRepositoryInterface $auditLog,
     ) {}
 
     /**
@@ -41,13 +42,14 @@ class WriteAuditLog implements ShouldHandleEventsAfterCommit, ShouldQueue
 
         $deal = Deal::findOrFail($event->dealId);
 
-        // tenant_id is stamped automatically by BelongsToTenant from the
-        // TenantContext we just set.
-        AuditLog::create([
-            'event' => 'lead.converted',
-            'subject_type' => Deal::class,
-            'subject_id' => $deal->id,
-            'data' => ['deal_amount' => (float) $deal->amount],
-        ]);
+        // Which database stores this is decided by config (ADR 009), not
+        // here. tenant_id is stamped by the model's BelongsToTenant trait
+        // from the TenantContext we just set — in either store.
+        $this->auditLog->record(
+            'lead.converted',
+            Deal::class,
+            (int) $deal->id,
+            ['deal_amount' => (float) $deal->amount],
+        );
     }
 }

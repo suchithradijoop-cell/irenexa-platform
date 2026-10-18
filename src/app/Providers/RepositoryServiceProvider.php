@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Repositories\CachedContactRepository;
 use App\Repositories\Contracts\ActivityRepositoryInterface;
+use App\Repositories\Contracts\AuditLogRepositoryInterface;
 use App\Repositories\Contracts\CompanyRepositoryInterface;
 use App\Repositories\Contracts\ContactRepositoryInterface;
 use App\Repositories\Contracts\DealRepositoryInterface;
@@ -13,13 +14,16 @@ use App\Repositories\Contracts\LeadRepositoryInterface;
 use App\Repositories\Contracts\NotificationRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\EloquentActivityRepository;
+use App\Repositories\EloquentAuditLogRepository;
 use App\Repositories\EloquentCompanyRepository;
 use App\Repositories\EloquentContactRepository;
 use App\Repositories\EloquentDealRepository;
 use App\Repositories\EloquentLeadRepository;
 use App\Repositories\EloquentNotificationRepository;
 use App\Repositories\EloquentUserRepository;
+use App\Repositories\MongoAuditLogRepository;
 use Illuminate\Support\ServiceProvider;
+use InvalidArgumentException;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -64,6 +68,21 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             NotificationRepositoryInterface::class,
             EloquentNotificationRepository::class,
+        );
+
+        // The one place that knows which audit store is active (ADR 009).
+        // An unknown value throws instead of silently falling back, so a
+        // typo in AUDIT_STORE is caught immediately rather than quietly
+        // writing audit data to the wrong database.
+        $this->app->bind(
+            AuditLogRepositoryInterface::class,
+            fn ($app) => match (config('audit.store')) {
+                'mysql' => $app->make(EloquentAuditLogRepository::class),
+                'mongodb' => $app->make(MongoAuditLogRepository::class),
+                default => throw new InvalidArgumentException(
+                    'Unknown audit store ['.config('audit.store').']. Use "mysql" or "mongodb".',
+                ),
+            },
         );
     }
 }
