@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Contracts;
 
+use App\Support\AuditFilter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
@@ -25,7 +26,8 @@ interface AuditLogRepositoryInterface
     public function record(string $event, string $subjectType, int $subjectId, array $data = []): void;
 
     /**
-     * Newest-first page of the current tenant's entries.
+     * Newest-first page of the current tenant's entries, optionally
+     * narrowed by the filter.
      */
-    public function paginate(int $perPage): LengthAwarePaginator;
+    public function paginate(int $perPage, AuditFilter $filter = new AuditFilter): LengthAwarePaginator;
 }

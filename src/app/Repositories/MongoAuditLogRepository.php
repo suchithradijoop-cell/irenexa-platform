@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\AuditEntry;
 use App\Repositories\Contracts\AuditLogRepositoryInterface;
+use App\Support\AuditFilter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
@@ -26,8 +27,10 @@ class MongoAuditLogRepository implements AuditLogRepositoryInterface
         ]);
     }
 
-    public function paginate(int $perPage): LengthAwarePaginator
+    public function paginate(int $perPage, AuditFilter $filter = new AuditFilter): LengthAwarePaginator
     {
-        return AuditEntry::query()->latest('created_at')->paginate($perPage);
+        return $filter->applyTo(AuditEntry::query())
+            ->latest('created_at')
+            ->paginate($perPage);
     }
 }

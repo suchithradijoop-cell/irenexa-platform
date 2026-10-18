@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\AuditLog;
 use App\Repositories\Contracts\AuditLogRepositoryInterface;
+use App\Support\AuditFilter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
@@ -23,8 +24,10 @@ class EloquentAuditLogRepository implements AuditLogRepositoryInterface
         ]);
     }
 
-    public function paginate(int $perPage): LengthAwarePaginator
+    public function paginate(int $perPage, AuditFilter $filter = new AuditFilter): LengthAwarePaginator
     {
-        return AuditLog::query()->latest('created_at')->paginate($perPage);
+        return $filter->applyTo(AuditLog::query())
+            ->latest('created_at')
+            ->paginate($perPage);
     }
 }

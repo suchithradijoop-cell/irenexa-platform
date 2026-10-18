@@ -35,7 +35,7 @@ must never appear in anything saved to the repository.
 **Phase 13 — Events: ✅ COMPLETE**
 **Phase 14 — Notifications: ✅ COMPLETE**
 **Phase 15 — MongoDB**
-Status: In progress — on Lesson 15.4
+Status: In progress — on Lesson 15.5
 
 ---
 
@@ -257,8 +257,8 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 15.1 | SQL vs Document Databases: When (and When Not) to Use MongoDB | ✅ |
 | 15.2 | Adding MongoDB to Docker, the PHP Extension and the Laravel Package | ✅ |
 | 15.3 | The First Document Model: an Activity Timeline Event (tenant-scoped) | ✅ |
-| 15.4 | Repository Payoff: Swapping the Audit Store from MySQL to MongoDB Behind an Interface | 🔄 |
-| 15.5 | A Timeline API with Flexible Filters | ⬜ |
+| 15.4 | Repository Payoff: Swapping the Audit Store from MySQL to MongoDB Behind an Interface | ✅ |
+| 15.5 | A Timeline API with Flexible Filters | 🔄 |
 | 15.6 | Testing Against MongoDB and ADR 009 | ⬜ |
 
 ## Phase 16 — Search ⬜

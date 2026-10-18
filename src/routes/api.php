@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\ActivityController;
+use App\Http\Controllers\Api\AuditController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\ContactController;
@@ -35,6 +36,10 @@ Route::middleware(['auth:sanctum', 'tenant', 'throttle:api'])->group(function ()
     Route::post('/contacts/{contact}/activities', [ActivityController::class, 'storeForContact']);
     Route::post('/companies/{company}/activities', [ActivityController::class, 'storeForCompany']);
     Route::post('/deals/{deal}/activities', [ActivityController::class, 'storeForDeal']);
+
+    // Tenant audit timeline, admins only (Lesson 15.5). Reads through the
+    // repository interface, so it works with whichever store is active.
+    Route::get('/audit', [AuditController::class, 'index']);
 
     // The caller's own in-app inbox (Lesson 14.5). No {user} in any URL:
     // whose inbox it is always comes from the authenticated token.
