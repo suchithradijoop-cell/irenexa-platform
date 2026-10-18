@@ -83,6 +83,24 @@ services:
     networks:
       - irenexa
 
+  # Browser UI for MongoDB, the counterpart of Adminer for MySQL. Local
+  # development only: it is published on 127.0.0.1 (this machine, not the
+  # network) and protected by a basic-auth login.
+  mongo-express:
+    image: mongo-express:1
+    container_name: irenexa-mongo-express
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://irenexa:password@mongodb:27017/?authSource=admin
+      ME_CONFIG_BASICAUTH_USERNAME: irenexa
+      ME_CONFIG_BASICAUTH_PASSWORD: password
+    ports:
+      - "127.0.0.1:8082:8081"
+    depends_on:
+      - mongodb
+    networks:
+      - irenexa
+
   redis:
     image: redis:7-alpine
     container_name: irenexa-redis
