@@ -34,8 +34,9 @@ must never appear in anything saved to the repository.
 **Phase 12 — Queue: ✅ COMPLETE**
 **Phase 13 — Events: ✅ COMPLETE**
 **Phase 14 — Notifications: ✅ COMPLETE**
-**Phase 15 — MongoDB**
-Status: In progress — on Lesson 15.5
+**Phase 15 — MongoDB: ✅ COMPLETE**
+**Phase 16 — Search: ⏭ NEXT**
+Status: Not started — lessons not yet broken down
 
 ---
 
@@ -250,7 +251,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 
 **Phase 14 complete.**
 
-## Phase 15 — MongoDB 🔄
+## Phase 15 — MongoDB ✅
 
 | # | Lesson | Status |
 |---|--------|--------|
@@ -258,8 +259,10 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 15.2 | Adding MongoDB to Docker, the PHP Extension and the Laravel Package | ✅ |
 | 15.3 | The First Document Model: an Activity Timeline Event (tenant-scoped) | ✅ |
 | 15.4 | Repository Payoff: Swapping the Audit Store from MySQL to MongoDB Behind an Interface | ✅ |
-| 15.5 | A Timeline API with Flexible Filters | 🔄 |
-| 15.6 | Testing Against MongoDB and ADR 009 | ⬜ |
+| 15.5 | A Timeline API with Flexible Filters | ✅ |
+| 15.6 | Testing Against MongoDB and ADR 009 | ✅ |
+
+**Phase 15 complete.**
 
 ## Phase 16 — Search ⬜
 ## Phase 17 — Payments ⬜
@@ -306,3 +309,4 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 2026-10-10 | **Phase 12 complete — Queue** | 12.1–12.2: queue concepts, jobs table, drivers. 12.3: `ExecuteWorkflowActionJob` — WorkflowEngine now dispatches one job per matching rule; the job takes the subject's class + ID (not a model) and sets `TenantContext` itself before loading it, because `SerializesModels` would otherwise re-fetch the model before `handle()` runs, through a fail-closed `TenantScope` with no tenant. 12.4: switched `QUEUE_CONNECTION` to redis, added a `horizon` docker service, gated `/horizon` to Admins. **Found a real Phase 11 gap:** the PHP image had no phpredis extension and a stale cached config kept the app on the `database` cache store — Redis caching was never live; tests hid it by using the `array` driver. Fixed via Dockerfile (`redis`, `pcntl`) + `config:clear`; also patched 4 `composer audit` advisories. 12.5: `$tries`, `$timeout`, `backoff()`, immediate `fail()` for permanent errors, `failed()` log with tenant. 12.6: `QueuedWorkflowJobTest` (dispatch vs inline, worker sets own tenant, cross-tenant subject blocked, permanent failure). |
 | 2026-10-14 | **Phase 13 complete — Events** | 13.1–13.2: `LeadConverted` event + `FireWorkflowRules` listener replace the direct WorkflowEngine call in `LeadConversionService` (its constructor shrank; existing tests passed untouched). 13.3: listener queued + after-commit; event carries `tenantId`/`dealId` instead of the model (same restore-before-handle trap as Lesson 12.3); `TenantContext` changed from `singleton` to `scoped` so a long-lived Horizon worker cannot leak one job's tenant into the next. A test broke as expected (Queue::fake now captures the queued listener first) and was updated to assert the two-hop structure. 13.4: `audit_logs` (append-only, tenant-scoped) + `WriteAuditLog` as a second listener — no existing file touched. 13.5: `LeadConvertedEventTest` (dispatch payload, listener registration, audit record, tenant isolation); noted the bare `Event::fake()` gotcha with model events. 13.6: extracted `TenantContext::setById()` (removed three duplicate blocks) and wrote ADR 007. |
 | 2026-10-22 | **Phase 14 complete — Notifications** | 14.1: events vs notifications, channels. 14.2: `notifications` table, `DealCreatedNotification`, `NotifyAdminsOfDealCreated` as the third `LeadConverted` listener, with an explicit tenant filter because `User` has no global scope. 14.3: mail channel + Mailpit service; first full live run (curl -> Redis queue -> Horizon -> email) proved the whole Phase 8-14 chain; debugging detour showed the demo database had no deals yet, and an earlier tinker/terminal prompt mix-up. Added `DemoSeeder`. 14.4: notification queued per recipient (a retry no longer duplicates mail), per-user `notify_by_email` preference decided in `via()`. 14.5: inbox API (list, unread count, mark read, read all) — owner always from the token, every repository method requires the user, foreign id -> 404; the contract test caught a Laravel quirk — a resource with its own top-level `data` key is not wrapped in the `{"data": ...}` envelope, so the payload field is exposed as `content`. 14.6: `NotificationsTest` (admins only, same tenant only, email opt-out keeps inbox, inbox API, cross-user isolation) and ADR 008. |
+| 2026-10-24 | **Phase 15 complete — MongoDB** | 15.1: document vs relational thinking; `mongodb` + `mongo-express` services. 15.2: PHP extension install — `pecl`/`install-php-extensions` crashed on PHP 8.3 (`fread(): Argument #2 must be of type int, float given` in PEAR/REST.php, found by reading the build log); fixed by installing a pinned tarball. 15.3: `AuditEntry` document model, compound index `{tenant_id, created_at}` created by `audit:ensure-indexes`; a smoke document with `tenant_id: null` showed the fail-closed tenant stamping working as designed. 15.4: `AuditLogRepositoryInterface` with MySQL and Mongo implementations selected by `AUDIT_STORE` (unknown value throws). 15.5: admin-only `GET /api/v1/audit` with an `AuditFilter` value object; strict scalar validation rejects NoSQL operator injection (`?event[$ne]=x`). 15.6: `AuditStoreBindingTest`, `AuditTimelineTest`, opt-in `MongoAuditRepositoryTest` (`RUN_MONGO_TESTS=1`), and ADR 009. |
