@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Contact;
 use App\Repositories\Contracts\ContactRepositoryInterface;
+use App\Search\ContactSearcher;
 use App\Support\SearchQuery;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
@@ -15,6 +16,7 @@ class ContactService
 {
     public function __construct(
         protected ContactRepositoryInterface $contacts,
+        protected ContactSearcher $searcher,
     ) {}
 
     public function listAll(): Collection
@@ -40,7 +42,7 @@ class ContactService
             return new Paginator([], 0, $perPage);
         }
 
-        return $this->contacts->search($query, $perPage);
+        return $this->searcher->search($query, $perPage);
     }
 
     public function createContact(array $data): Contact

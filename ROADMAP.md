@@ -36,7 +36,7 @@ must never appear in anything saved to the repository.
 **Phase 14 — Notifications: ✅ COMPLETE**
 **Phase 15 — MongoDB: ✅ COMPLETE**
 **Phase 16 — Search**
-Status: In progress — on Lesson 16.4
+Status: In progress — on Lesson 16.5
 
 ---
 
@@ -271,8 +271,8 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 16.1 | Why `LIKE '%x%'` Is Not Search (indexes, relevance, full-text vs search engines) | ✅ |
 | 16.2 | MySQL FULLTEXT Index and Boolean/Natural Language Search | ✅ |
 | 16.3 | A Search Repository Method + Tenant-Safe `GET /api/v1/contacts/search` | ✅ |
-| 16.4 | Search Engine Concepts: Inverted Index, Analyzers, Relevance (Meilisearch via Laravel Scout) | 🔄 |
-| 16.5 | Syncing Search Index with Queues (tenant filtering in the index) | ⬜ |
+| 16.4 | Search Engine Concepts: Inverted Index, Analyzers, Relevance (Meilisearch service) | ✅ |
+| 16.5 | Syncing Search Index with Queues (hand-built via Meilisearch REST API, tenant filtering in the index) | 🔄 |
 | 16.6 | Search Tests and ADR 010 | ⬜ |
 
 ## Phase 17 — Payments ⬜

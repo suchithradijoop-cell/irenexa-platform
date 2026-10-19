@@ -6,7 +6,9 @@ namespace App\Models;
 
 use App\Contracts\HasActivities;
 use App\MultiTenancy\BelongsToTenant;
+use App\Observers\ContactObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 // that's WHO OWNS the data, a much more dangerous thing to let a client
 // control.
 #[Fillable(['name', 'email', 'phone', 'job_title', 'company_id'])]
+#[ObservedBy(ContactObserver::class)]
 class Contact extends Model implements HasActivities
 {
     use BelongsToTenant, HasFactory;

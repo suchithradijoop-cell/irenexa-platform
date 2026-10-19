@@ -7,7 +7,6 @@ namespace App\Repositories;
 use App\Models\Contact;
 use App\MultiTenancy\TenantContext;
 use App\Repositories\Contracts\ContactRepositoryInterface;
-use App\Support\SearchQuery;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
@@ -52,14 +51,6 @@ class CachedContactRepository implements ContactRepositoryInterface
             self::TTL_SECONDS,
             fn () => $this->repository->paginate($perPage),
         );
-    }
-
-    public function search(SearchQuery $query, int $perPage): LengthAwarePaginator
-    {
-        // Not cached: the number of distinct phrases is practically
-        // unlimited, so hit rates would be low and the cache would fill with
-        // one-off entries. FULLTEXT is fast enough on its own.
-        return $this->repository->search($query, $perPage);
     }
 
     public function find(int $id): ?Contact

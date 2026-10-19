@@ -22,6 +22,9 @@ use App\Repositories\EloquentLeadRepository;
 use App\Repositories\EloquentNotificationRepository;
 use App\Repositories\EloquentUserRepository;
 use App\Repositories\MongoAuditLogRepository;
+use App\Search\ContactSearcher;
+use App\Search\MeilisearchContactSearcher;
+use App\Search\MysqlContactSearcher;
 use Illuminate\Support\ServiceProvider;
 use InvalidArgumentException;
 
@@ -48,6 +51,19 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             ContactRepositoryInterface::class,
             CachedContactRepository::class,
+        );
+
+        // The one place that knows which engine answers contact searches
+        // (ADR 010). Unknown values throw, like AUDIT_STORE.
+        $this->app->bind(
+            ContactSearcher::class,
+            fn ($app) => match (config('search.driver')) {
+                'mysql' => $app->make(MysqlContactSearcher::class),
+                'meilisearch' => $app->make(MeilisearchContactSearcher::class),
+                default => throw new InvalidArgumentException(
+                    'Unknown search driver ['.config('search.driver').']. Use "mysql" or "meilisearch".',
+                ),
+            },
         );
 
         $this->app->bind(
