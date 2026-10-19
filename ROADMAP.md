@@ -35,8 +35,9 @@ must never appear in anything saved to the repository.
 **Phase 13 — Events: ✅ COMPLETE**
 **Phase 14 — Notifications: ✅ COMPLETE**
 **Phase 15 — MongoDB: ✅ COMPLETE**
-**Phase 16 — Search**
-Status: In progress — on Lesson 16.5
+**Phase 16 — Search: ✅ COMPLETE**
+**Phase 17 — Payments**
+Status: Not started — lessons not yet broken down
 
 ---
 
@@ -264,7 +265,7 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 
 **Phase 15 complete.**
 
-## Phase 16 — Search 🔄
+## Phase 16 — Search ✅
 
 | # | Lesson | Status |
 |---|--------|--------|
@@ -272,8 +273,10 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 16.2 | MySQL FULLTEXT Index and Boolean/Natural Language Search | ✅ |
 | 16.3 | A Search Repository Method + Tenant-Safe `GET /api/v1/contacts/search` | ✅ |
 | 16.4 | Search Engine Concepts: Inverted Index, Analyzers, Relevance (Meilisearch service) | ✅ |
-| 16.5 | Syncing Search Index with Queues (hand-built via Meilisearch REST API, tenant filtering in the index) | 🔄 |
-| 16.6 | Search Tests and ADR 010 | ⬜ |
+| 16.5 | Syncing Search Index with Queues (hand-built via Meilisearch REST API, tenant filtering in the index) | ✅ |
+| 16.6 | Search Tests and ADR 010 | ✅ |
+
+**Phase 16 complete.**
 
 ## Phase 17 — Payments ⬜
 ## Phase 18 — AI ⬜
@@ -320,3 +323,4 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 | 2026-10-14 | **Phase 13 complete — Events** | 13.1–13.2: `LeadConverted` event + `FireWorkflowRules` listener replace the direct WorkflowEngine call in `LeadConversionService` (its constructor shrank; existing tests passed untouched). 13.3: listener queued + after-commit; event carries `tenantId`/`dealId` instead of the model (same restore-before-handle trap as Lesson 12.3); `TenantContext` changed from `singleton` to `scoped` so a long-lived Horizon worker cannot leak one job's tenant into the next. A test broke as expected (Queue::fake now captures the queued listener first) and was updated to assert the two-hop structure. 13.4: `audit_logs` (append-only, tenant-scoped) + `WriteAuditLog` as a second listener — no existing file touched. 13.5: `LeadConvertedEventTest` (dispatch payload, listener registration, audit record, tenant isolation); noted the bare `Event::fake()` gotcha with model events. 13.6: extracted `TenantContext::setById()` (removed three duplicate blocks) and wrote ADR 007. |
 | 2026-10-22 | **Phase 14 complete — Notifications** | 14.1: events vs notifications, channels. 14.2: `notifications` table, `DealCreatedNotification`, `NotifyAdminsOfDealCreated` as the third `LeadConverted` listener, with an explicit tenant filter because `User` has no global scope. 14.3: mail channel + Mailpit service; first full live run (curl -> Redis queue -> Horizon -> email) proved the whole Phase 8-14 chain; debugging detour showed the demo database had no deals yet, and an earlier tinker/terminal prompt mix-up. Added `DemoSeeder`. 14.4: notification queued per recipient (a retry no longer duplicates mail), per-user `notify_by_email` preference decided in `via()`. 14.5: inbox API (list, unread count, mark read, read all) — owner always from the token, every repository method requires the user, foreign id -> 404; the contract test caught a Laravel quirk — a resource with its own top-level `data` key is not wrapped in the `{"data": ...}` envelope, so the payload field is exposed as `content`. 14.6: `NotificationsTest` (admins only, same tenant only, email opt-out keeps inbox, inbox API, cross-user isolation) and ADR 008. |
 | 2026-10-24 | **Phase 15 complete — MongoDB** | 15.1: document vs relational thinking; `mongodb` + `mongo-express` services. 15.2: PHP extension install — `pecl`/`install-php-extensions` crashed on PHP 8.3 (`fread(): Argument #2 must be of type int, float given` in PEAR/REST.php, found by reading the build log); fixed by installing a pinned tarball. 15.3: `AuditEntry` document model, compound index `{tenant_id, created_at}` created by `audit:ensure-indexes`; a smoke document with `tenant_id: null` showed the fail-closed tenant stamping working as designed. 15.4: `AuditLogRepositoryInterface` with MySQL and Mongo implementations selected by `AUDIT_STORE` (unknown value throws). 15.5: admin-only `GET /api/v1/audit` with an `AuditFilter` value object; strict scalar validation rejects NoSQL operator injection (`?event[$ne]=x`). 15.6: `AuditStoreBindingTest`, `AuditTimelineTest`, opt-in `MongoAuditRepositoryTest` (`RUN_MONGO_TESTS=1`), and ADR 009. |
+| 2026-10-26 | **Phase 16 complete — Search** | 16.1: why `LIKE '%x%'` is a full scan with no ranking (inverted index, three levels of search). 16.2: FULLTEXT index migration, guarded for SQLite. 16.3: `GET /api/v1/contacts/search` with `SearchQuery` (strips boolean-mode operators, builds `+word*` itself), tenant-scoped through `TenantScope`. 16.4: Meilisearch service, search engine concepts, the shared-index tenant leak risk. 16.5: `search()` moved out of the repository into a `ContactSearcher` interface (Interface Segregation) with MySQL and Meilisearch implementations chosen by `SEARCH_DRIVER`; `ContactObserver` plus `SyncContactToSearchIndexJob` (IDs only, after commit, idempotent); `search:setup --reindex`; built on the REST API with Laravel's HTTP client instead of Scout. Bug found: `Queueable` already declares `$afterCommit`, so redeclaring it was a fatal error; fixed by calling `afterCommit()` in the constructor. 16.6: `SearchQueryTest`, `ContactSearchTest`, `MeilisearchSearchTest` (Http::fake: tenant filter sent, engine order kept, foreign id dropped, fail closed without a tenant, job indexes/deletes) and ADR 010. |

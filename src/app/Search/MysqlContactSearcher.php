@@ -31,13 +31,18 @@ class MysqlContactSearcher implements ContactSearcher
         }
 
         // Fallback for databases without FULLTEXT (the SQLite test suite).
+        // FULLTEXT matches the START OF ANY WORD, and words are separated by
+        // spaces, '@' and '.', so the fallback checks those same word starts.
         foreach ($query->words as $word) {
             $builder->where(function (Builder $group) use ($word): void {
                 $like = $word.'%';
                 $group->where('name', 'like', $like)
+                    ->orWhere('name', 'like', '% '.$like)
                     ->orWhere('email', 'like', $like)
+                    ->orWhere('email', 'like', '%@'.$like)
+                    ->orWhere('email', 'like', '%.'.$like)
                     ->orWhere('job_title', 'like', $like)
-                    ->orWhere('name', 'like', '% '.$like);
+                    ->orWhere('job_title', 'like', '% '.$like);
             });
         }
 

@@ -27,10 +27,13 @@ final readonly class SearchQuery
 
     public static function fromUserInput(string $input): self
     {
-        // \p{L} = any letter in any language, \p{N} = any digit. Everything
-        // else (operators, punctuation, '@', '.') becomes a separator, which
-        // is also how InnoDB splits "john@acme.com" into john / acme / com.
-        $words = preg_split('/[^\p{L}\p{N}]+/u', $input, -1, PREG_SPLIT_NO_EMPTY);
+        // \p{L} = any letter in any language, \p{N} = any digit, \p{M} =
+        // combining marks (vowel signs and the virama in Malayalam, Hindi,
+        // Tamil; accents). Without \p{M} a word like "അമ്മ" would be torn
+        // into pieces. Everything else (operators, punctuation, '@', '.')
+        // becomes a separator, which is also how InnoDB splits
+        // "john@acme.com" into john / acme / com.
+        $words = preg_split('/[^\p{L}\p{M}\p{N}]+/u', $input, -1, PREG_SPLIT_NO_EMPTY);
 
         $words = array_values(array_filter(
             $words === false ? [] : $words,
