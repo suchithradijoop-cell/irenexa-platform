@@ -101,6 +101,24 @@ services:
     networks:
       - irenexa
 
+  # Search engine (Lesson 16.4). Published on 127.0.0.1 only. The master key
+  # is a LOCAL-DEVELOPMENT value; production uses a long random secret.
+  # Dashboard: http://localhost:7700 (enter the master key).
+  meilisearch:
+    image: getmeili/meilisearch:v1.12
+    container_name: irenexa-meilisearch
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: local-dev-master-key-change-me
+      MEILI_ENV: development
+      MEILI_NO_ANALYTICS: "true"
+    ports:
+      - "127.0.0.1:7700:7700"
+    volumes:
+      - meili_data:/meili_data
+    networks:
+      - irenexa
+
   redis:
     image: redis:7-alpine
     container_name: irenexa-redis
@@ -135,6 +153,7 @@ services:
 volumes:
   mysql_data:
   mongo_data:
+  meili_data:
 
 networks:
   irenexa:
