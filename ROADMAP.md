@@ -37,7 +37,7 @@ must never appear in anything saved to the repository.
 **Phase 15 — MongoDB: ✅ COMPLETE**
 **Phase 16 — Search: ✅ COMPLETE**
 **Phase 17 — Payments**
-Status: Not started — lessons not yet broken down
+Status: In progress — on Lesson 17.2
 
 ---
 
@@ -278,7 +278,17 @@ Docker (PHP-FPM, Nginx, MySQL 8.4, Redis) already scaffolded. Remaining:
 
 **Phase 16 complete.**
 
-## Phase 17 — Payments ⬜
+## Phase 17 — Payments 🔄
+
+| # | Lesson | Status |
+|---|--------|--------|
+| 17.1 | SaaS Billing Concepts: plans, subscriptions, invoices, why we never touch card data | ✅ |
+| 17.2 | Plans and Subscriptions Data Model (per tenant, status enum) | 🔄 |
+| 17.3 | `PaymentGateway` Interface: Fake and Stripe (test mode) Implementations, Checkout | ⬜ |
+| 17.4 | Webhooks: Signature Verification, Idempotency, Queued Processing | ⬜ |
+| 17.5 | Plan Limits Enforcement and Billing API | ⬜ |
+| 17.6 | Payment Tests and ADR 011 | ⬜ |
+
 ## Phase 18 — AI ⬜
 ## Phase 19 — Testing (Unit + Feature) ⬜
 ## Phase 20 — CI/CD (GitHub Actions) ⬜
